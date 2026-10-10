@@ -45,7 +45,7 @@ setup(
         "jsonschema>=4.0.0",
         "pyyaml>=6.0",
         "colorama>=0.4.0",
-        "rhylthyme-spec>=0.2.2a0",
+        "rhylthyme-spec>=0.2.3a0",  # step alerts
     ],
     extras_require={
         # `rhylthyme import`: recipes and protocols from external sources
