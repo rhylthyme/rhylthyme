@@ -9,13 +9,14 @@ from typing import Any, Dict
 
 import pytest
 
-from rhylthyme_cli_runner.instruments import (
+from rhylthyme.cli.tui import run_program
+from rhylthyme.instruments import (
     INSTALL_HINT,
     InstrumentSetupError,
     attach_instruments,
     program_uses_instruments,
 )
-from rhylthyme_cli_runner.program_runner import ProgramRunner, StepStatus, run_program
+from rhylthyme.program_runner import DurationType, ProgramRunner, StepStatus
 
 pytestmark = pytest.mark.unit
 
@@ -201,7 +202,7 @@ def _codes(findings):
 
 
 def test_programs_without_instruments_need_no_package(monkeypatch):
-    from rhylthyme_cli_runner.instruments import instrument_findings
+    from rhylthyme.instruments import instrument_findings
 
     monkeypatch.setitem(sys.modules, "rhylthyme_galago", None)
     plain = copy.deepcopy(PROGRAM)
@@ -210,7 +211,7 @@ def test_programs_without_instruments_need_no_package(monkeypatch):
 
 
 def test_missing_package_warns_without_workcell_and_fails_with_one(monkeypatch):
-    from rhylthyme_cli_runner.instruments import instrument_findings
+    from rhylthyme.instruments import instrument_findings
 
     monkeypatch.setitem(sys.modules, "rhylthyme_galago", None)
     [finding] = instrument_findings(PROGRAM)
@@ -222,7 +223,7 @@ def test_missing_package_warns_without_workcell_and_fails_with_one(monkeypatch):
 
 def test_findings_name_the_step_and_field():
     pytest.importorskip("rhylthyme_galago")
-    from rhylthyme_cli_runner.instruments import instrument_findings
+    from rhylthyme.instruments import instrument_findings
 
     [finding] = instrument_findings(
         _with_instrument(toolType="bioshake", params={"speed": "fast"})
@@ -239,7 +240,7 @@ def test_findings_name_the_step_and_field():
 
 def test_workcell_findings():
     pytest.importorskip("rhylthyme_galago")
-    from rhylthyme_cli_runner.instruments import instrument_findings
+    from rhylthyme.instruments import instrument_findings
 
     assert _codes(instrument_findings(_with_instrument(tool="reader"), WORKCELL)) == [
         ("instrument_unknown_tool", "error")
@@ -257,7 +258,7 @@ def test_validate_cli_with_workcell(tmp_path):
     pytest.importorskip("rhylthyme_galago")
     from click.testing import CliRunner
 
-    from rhylthyme_cli_runner.cli import cli
+    from rhylthyme.cli.main import cli
 
     good = _write(tmp_path, "good.json", PROGRAM)
     bad = _write(tmp_path, "bad.json", _with_instrument(command="spin"))
@@ -283,7 +284,7 @@ def test_validate_cli_with_workcell(tmp_path):
 
 def test_run_refuses_invalid_instrument_command(tmp_path, capsys):
     pytest.importorskip("rhylthyme_galago")
-    from rhylthyme_cli_runner.cli import _default_schema_path
+    from rhylthyme.cli.main import _default_schema_path
 
     path = _write(tmp_path, "p.json", _with_instrument(params={"rpm": 5}))
     workcell = _write(tmp_path, "lab.json", WORKCELL)
@@ -301,7 +302,7 @@ def fake_tools(monkeypatch):
     pytest.importorskip("rhylthyme_galago")
     from rhylthyme_galago import FakeToolClient
 
-    import rhylthyme_cli_runner.program_runner as pr
+    import rhylthyme.cli.tui as pr
 
     tool = FakeToolClient()
     real_open = pr.open_instruments
@@ -335,7 +336,7 @@ def _run(tmp_path, **kwargs):
 
 def test_open_instruments_contacts_no_tool():
     pytest.importorskip("rhylthyme_galago")
-    from rhylthyme_cli_runner.instruments import open_instruments
+    from rhylthyme.instruments import open_instruments
 
     made = []
     session = open_instruments(
@@ -349,7 +350,7 @@ def test_live_summary_lists_tools_and_commands_without_configuring():
     pytest.importorskip("rhylthyme_galago")
     from rhylthyme_galago import FakeToolClient
 
-    from rhylthyme_cli_runner.instruments import open_instruments
+    from rhylthyme.instruments import open_instruments
 
     tool = FakeToolClient(status="READY")
     session = open_instruments(
@@ -420,7 +421,7 @@ def test_run_record_holds_no_workcell_data(tmp_path):
     pytest.importorskip("rhylthyme_galago")
     from rhylthyme_galago import FakeToolClient
 
-    from rhylthyme_cli_runner.history.recorder import RunRecorder
+    from rhylthyme.history.recorder import RunRecorder
 
     workcell = copy.deepcopy(WORKCELL)
     workcell["tools"][0].update(host="10.20.30.40", port=50710)
@@ -440,7 +441,7 @@ def test_run_record_holds_no_workcell_data(tmp_path):
     written = recorder.finalize()
     text = open(written).read()
     assert "10.20.30.40" not in text and "50710" not in text
-    from rhylthyme_cli_runner.history.store import validate_run
+    from rhylthyme.history.store import validate_run
 
     record = json.loads(text)
     assert validate_run(record) == []
@@ -606,7 +607,7 @@ def test_skip_marks_done_and_releases_dependents():
 
 def test_abort_program_ends_the_run_with_a_reason(tmp_path):
     pytest.importorskip("rhylthyme_galago")
-    from rhylthyme_cli_runner.history.recorder import RunRecorder
+    from rhylthyme.history.recorder import RunRecorder
 
     runner = ProgramRunner(copy.deepcopy(TWO_TRACKS), time_scale=100.0)
     recorder = RunRecorder(
@@ -630,7 +631,7 @@ def test_abort_program_ends_the_run_with_a_reason(tmp_path):
     record = json.loads(open(recorder.finalize()).read())
     assert record["outcome"] == "aborted"
     assert record["context"]["abortReason"] == "plate cracked"
-    from rhylthyme_cli_runner.history.store import validate_run
+    from rhylthyme.history.store import validate_run
 
     assert validate_run(record) == []
 
@@ -647,7 +648,7 @@ class _Keys:
 
 def test_keys_retry_skip_and_double_press_abort():
     pytest.importorskip("rhylthyme_galago")
-    from rhylthyme_cli_runner.program_runner import handle_input
+    from rhylthyme.cli.tui import handle_input
 
     runner, session, _ = started_runner(_failing())
     try:
@@ -666,7 +667,7 @@ def test_keys_retry_skip_and_double_press_abort():
 
 
 def test_ctrl_c_reports_in_flight_commands(fake_tools, tmp_path, capsys, monkeypatch):
-    import rhylthyme_cli_runner.program_runner as pr
+    import rhylthyme.cli.tui as pr
 
     fake_tools.gate = threading.Event()
     captured = {}
@@ -946,7 +947,7 @@ class _Screen:
 
 @pytest.fixture
 def screen(monkeypatch):
-    import rhylthyme_cli_runner.program_runner as pr
+    import rhylthyme.cli.tui as pr
 
     for name in ("start_color", "use_default_colors", "init_pair"):
         monkeypatch.setattr(pr.curses, name, lambda *a: None)
@@ -976,7 +977,7 @@ def test_tui_shows_badge_waiting_and_failure(screen):
     pytest.importorskip("rhylthyme_galago")
     from rhylthyme_galago import FakeToolClient
 
-    from rhylthyme_cli_runner.program_runner import draw_ui
+    from rhylthyme.cli.tui import draw_ui
 
     tool = FakeToolClient(gate=threading.Event())
     runner, session, _ = started_runner(tool)
@@ -1013,8 +1014,8 @@ def test_run_history_records_every_reply_with_metadata(tmp_path):
     pytest.importorskip("rhylthyme_galago")
     from rhylthyme_galago import FakeToolClient, ToolReply
 
-    from rhylthyme_cli_runner.history.recorder import RunRecorder
-    from rhylthyme_cli_runner.history.store import validate_run
+    from rhylthyme.history.recorder import RunRecorder
+    from rhylthyme.history.store import validate_run
 
     readings = {
         "wells": {"A1": 0.412, "A2": 1.07},
@@ -1061,7 +1062,7 @@ def test_run_history_records_every_reply_with_metadata(tmp_path):
 
 
 def test_fill_durations_needs_the_package(monkeypatch):
-    from rhylthyme_cli_runner.instruments import fill_instrument_durations
+    from rhylthyme.instruments import fill_instrument_durations
 
     monkeypatch.setitem(sys.modules, "rhylthyme_galago", None)
     program, [note] = fill_instrument_durations(PROGRAM)
@@ -1072,7 +1073,7 @@ def test_fill_durations_needs_the_package(monkeypatch):
 
 
 def test_nothing_to_fill_needs_nothing(monkeypatch):
-    from rhylthyme_cli_runner.instruments import fill_instrument_durations
+    from rhylthyme.instruments import fill_instrument_durations
 
     monkeypatch.setitem(sys.modules, "rhylthyme_galago", None)
     plain = copy.deepcopy(PROGRAM)
@@ -1081,7 +1082,7 @@ def test_nothing_to_fill_needs_nothing(monkeypatch):
 
 
 def test_planned_makespan_follows_triggers_and_durations():
-    from rhylthyme_cli_runner.program_planner import planned_makespan
+    from rhylthyme.program_planner import planned_makespan
 
     program = copy.deepcopy(PROGRAM)
     program["tracks"][0]["steps"][1]["duration"] = {"type": "fixed", "seconds": 5.5}
@@ -1093,7 +1094,7 @@ def test_plan_fills_durations_offline(tmp_path):
     pytest.importorskip("rhylthyme_galago")
     from click.testing import CliRunner
 
-    from rhylthyme_cli_runner.cli import cli
+    from rhylthyme.cli.main import cli
 
     src = _write(tmp_path, "p.json", PROGRAM)
     out = tmp_path / "planned.json"
@@ -1113,7 +1114,7 @@ def test_plan_with_workcell_asks_the_tools(tmp_path, monkeypatch):
     galago = pytest.importorskip("rhylthyme_galago")
     from click.testing import CliRunner
 
-    from rhylthyme_cli_runner.cli import cli
+    from rhylthyme.cli.main import cli
 
     tool = galago.FakeToolClient(estimates={"start_shake": 42})
     real = galago.fill_durations
@@ -1158,7 +1159,7 @@ def _jwt(sub):
 def test_bridge_publishes_the_run_to_the_users_tables(
     fake_tools, tmp_path, monkeypatch
 ):
-    import rhylthyme_cli_runner.program_runner as pr
+    import rhylthyme.cli.tui as pr
 
     rest = _RecordingRest()
     real_start = pr.start_bridge
@@ -1220,7 +1221,7 @@ def test_bridge_publishes_the_run_to_the_users_tables(
 
 
 def test_bridge_needs_a_login(fake_tools, tmp_path, monkeypatch, capsys):
-    from rhylthyme_cli_runner.remote import auth
+    from rhylthyme.cli.remote import auth
 
     monkeypatch.setattr(auth, "load_credentials", lambda path=None: None)
     program = _write(tmp_path, "p.json", PROGRAM)
@@ -1269,8 +1270,8 @@ def test_remote_commands_only_apply_when_they_make_sense():
 
 def test_remote_commands_go_into_the_run_record(tmp_path):
     pytest.importorskip("rhylthyme_galago")
-    from rhylthyme_cli_runner.history.recorder import RunRecorder
-    from rhylthyme_cli_runner.history.store import validate_run
+    from rhylthyme.history.recorder import RunRecorder
+    from rhylthyme.history.store import validate_run
 
     runner = ProgramRunner(copy.deepcopy(PROGRAM), time_scale=100.0)
     recorder = RunRecorder(
@@ -1306,7 +1307,7 @@ def test_a_browser_retry_reaches_the_runner_through_the_bridge(tmp_path):
 
     from rhylthyme_galago import FakeToolClient, ToolReply
 
-    from rhylthyme_cli_runner.instruments import start_bridge
+    from rhylthyme.cli.bridge import start_bridge
 
     tool = FakeToolClient({"start_shake": ToolReply("DRIVER_ERROR", "lid open")})
 
@@ -1361,7 +1362,7 @@ def test_a_browser_retry_reaches_the_runner_through_the_bridge(tmp_path):
 
 
 def test_main_loop_leaves_by_itself_after_a_web_started_run(screen, monkeypatch):
-    import rhylthyme_cli_runner.program_runner as pr
+    import rhylthyme.cli.tui as pr
 
     monkeypatch.setattr(pr.curses, "curs_set", lambda n: None)
 
@@ -1379,7 +1380,7 @@ def test_main_loop_leaves_by_itself_after_a_web_started_run(screen, monkeypatch)
     for step in list(runner.steps.values()):
         if step.instrument:
             step.instrument = None  # hand steps only: the run finishes on timers
-            step.duration_type = pr.DurationType.FIXED
+            step.duration_type = DurationType.FIXED
             step.duration_seconds = 1
     assert not pr.run_finished(runner)
     started = time.time()

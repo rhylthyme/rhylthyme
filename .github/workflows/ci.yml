@@ -178,7 +178,7 @@ jobs:
         # eval/** holds the committed numbers and the response cache;
         # four_turn.py is the byte mirror of rhylthyme-server's
         # mcp-api/prompts.js, and baseline.py the frozen pre-Phase-3 prompt.
-        if echo "$CHANGED" | grep -Eq '^(eval/|src/rhylthyme_cli_runner/eval/|\.github/workflows/ci\.yml$)'; then
+        if echo "$CHANGED" | grep -Eq '^(eval/|src/rhylthyme/eval/|\.github/workflows/ci\.yml$)'; then
           echo "run=true" >> "$GITHUB_OUTPUT"
         else
           echo "run=false" >> "$GITHUB_OUTPUT"
@@ -262,7 +262,7 @@ jobs:
         ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       run: |
         set -euo pipefail
-        python -m rhylthyme_cli_runner.cli eval-prompts \
+        python -m rhylthyme.cli.main eval-prompts \
           --gold ../rhylthyme-examples/gold \
           --model "${{ steps.pin.outputs.model }}" \
           --patterns four-turn \
@@ -276,7 +276,7 @@ jobs:
       working-directory: rhylthyme-cli-runner
       run: |
         set -euo pipefail
-        python -m rhylthyme_cli_runner.cli eval-prompts compare \
+        python -m rhylthyme.cli.main eval-prompts compare \
           --baseline eval/four-turn.json \
           --results eval-results/results.json \
           --rel-f1-drop 5 \

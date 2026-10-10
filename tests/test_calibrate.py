@@ -17,9 +17,15 @@ import jsonschema
 import pytest
 from click.testing import CliRunner
 
-from rhylthyme_cli_runner.cli import cli
-from rhylthyme_cli_runner.history import synthesize_runs
-from rhylthyme_cli_runner.history.calibrate import (
+from rhylthyme.cli.history.calibrate_cli import (
+    describe_values,
+    effect_line,
+    parse_accept,
+    render_proposal,
+)
+from rhylthyme.cli.main import cli
+from rhylthyme.history import synthesize_runs
+from rhylthyme.history.calibrate import (
     FIXED_DURATION,
     INSUFFICIENT_RUNS,
     NO_MEASUREMENTS,
@@ -32,13 +38,7 @@ from rhylthyme_cli_runner.history.calibrate import (
     calibration_effect,
     propose_calibration,
 )
-from rhylthyme_cli_runner.history.calibrate_cli import (
-    describe_values,
-    effect_line,
-    parse_accept,
-    render_proposal,
-)
-from rhylthyme_cli_runner.history.report import EXECUTOR_CONTROLLED, PREDICTABLE
+from rhylthyme.history.report import EXECUTOR_CONTROLLED, PREDICTABLE
 
 LOW_CV = 0.04
 HIGH_CV = 0.40
@@ -256,7 +256,7 @@ class TestProposal:
     def test_provenance_records_the_hash_the_runs_were_measured_against(
         self, program, runs20
     ):
-        from rhylthyme_cli_runner.history import program_version
+        from rhylthyme.history import program_version
 
         before = program_version(program)
         proposal = propose_calibration(program, runs20, as_of=AS_OF)
@@ -514,7 +514,7 @@ class TestApplyCalibration:
     def test_the_result_passes_the_full_validator(self, program, proposal, tmp_path):
         from rhylthyme_spec import get_program_schema_path
 
-        from rhylthyme_cli_runner.validate_program import validate_program_file
+        from rhylthyme.validate_program import validate_program_file
 
         out = apply_calibration(program, proposal, "all")
         path = tmp_path / "calibrated.json"

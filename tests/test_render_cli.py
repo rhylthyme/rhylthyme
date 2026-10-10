@@ -5,7 +5,7 @@ import types
 
 from click.testing import CliRunner
 
-from rhylthyme_cli_runner.cli import cli
+from rhylthyme.cli.main import cli
 
 
 def test_arguments_pass_through_unchanged(monkeypatch):
@@ -30,4 +30,4 @@ def test_exit_code_is_the_renderers(monkeypatch):
 def test_without_the_package_the_message_says_how_to_get_it(monkeypatch):
     monkeypatch.setitem(sys.modules, "rhylthyme_timeline", None)
     r = CliRunner().invoke(cli, ["render", "p.json"])
-    assert r.exit_code != 0 and "pip install rhylthyme-timeline" in r.output
+    assert r.exit_code != 0 and "rhylthyme[timeline]" in r.output

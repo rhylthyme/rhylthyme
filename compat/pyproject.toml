@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rhylthyme-cli-runner"
+version = "0.5.0"
+description = "Renamed to rhylthyme. This package only installs rhylthyme and keeps old `import rhylthyme_cli_runner` code working, with a deprecation warning."
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "Apache-2.0"}
+authors = [{name = "Jeremy Leipzig", email = "leipzig@gmail.com"}]
+classifiers = [
+    "Development Status :: 7 - Inactive",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+# The dependency runs this way only: rhylthyme never depends on this package.
+dependencies = ["rhylthyme>=0.5.0"]
+
+[project.urls]
+Homepage = "https://www.rhylthyme.com"
+Documentation = "https://docs.rhylthyme.com"
+Source = "https://github.com/rhylthyme/rhylthyme"
+
+[tool.setuptools.packages.find]
+where = ["src"]

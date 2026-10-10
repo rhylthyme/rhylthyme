@@ -11,13 +11,11 @@ import pytest
 
 labmcp = pytest.importorskip("rhylthyme_labmcp")
 
-from rhylthyme_cli_runner.bridge_serve import serve  # noqa: E402
-from rhylthyme_cli_runner.cli import _default_schema_path  # noqa: E402
-from rhylthyme_cli_runner.instruments import (  # noqa: E402
-    attach_instruments,
-    start_bridge,
-)
-from rhylthyme_cli_runner.program_runner import ProgramRunner, StepStatus  # noqa: E402
+from rhylthyme.cli.bridge import start_bridge  # noqa: E402
+from rhylthyme.cli.bridge_serve import serve  # noqa: E402
+from rhylthyme.cli.main import _default_schema_path  # noqa: E402
+from rhylthyme.instruments import attach_instruments  # noqa: E402
+from rhylthyme.program_runner import ProgramRunner, StepStatus  # noqa: E402
 
 pytestmark = pytest.mark.unit
 

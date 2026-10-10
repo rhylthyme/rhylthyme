@@ -1,5 +1,5 @@
 """
-Tests for the live prompt-evaluation harness (rhylthyme_cli_runner.eval.harness).
+Tests for the live prompt-evaluation harness (rhylthyme.cli.eval.harness).
 
 Everything runs against FakeClient; the one real-API test is marked ``llm``
 and skipped unless RHYLTHYME_EVAL_LIVE=1.
@@ -14,8 +14,7 @@ from pathlib import Path
 
 import pytest
 
-from rhylthyme_cli_runner.eval.gold import GoldProgram, load_gold_set
-from rhylthyme_cli_runner.eval.harness import (
+from rhylthyme.cli.eval.harness import (
     CacheMiss,
     HarnessConfig,
     baseline_payload,
@@ -25,13 +24,8 @@ from rhylthyme_cli_runner.eval.harness import (
     run_program,
     write_baseline,
 )
-from rhylthyme_cli_runner.eval.llm import (
-    Completion,
-    FakeClient,
-    estimate_cost,
-    price_for,
-)
-from rhylthyme_cli_runner.eval.patterns import (
+from rhylthyme.cli.eval.llm import Completion, FakeClient, estimate_cost, price_for
+from rhylthyme.cli.eval.patterns import (
     FIX_REQUEST,
     NO_JSON_FINDING,
     PATTERNS,
@@ -41,7 +35,7 @@ from rhylthyme_cli_runner.eval.patterns import (
     extract_program,
     get_pattern,
 )
-from rhylthyme_cli_runner.eval.patterns.baseline import (
+from rhylthyme.cli.eval.patterns.baseline import (
     BASELINE_MD,
     BaselinePattern,
     authoring_guide,
@@ -50,7 +44,7 @@ from rhylthyme_cli_runner.eval.patterns.baseline import (
     render_plan_schedule,
     render_server_instructions,
 )
-from rhylthyme_cli_runner.eval.patterns.four_turn import (
+from rhylthyme.cli.eval.patterns.four_turn import (
     FOUR_TURN_PREAMBLE,
     FOUR_TURNS,
     FourTurnPattern,
@@ -64,6 +58,7 @@ from rhylthyme_cli_runner.eval.patterns.four_turn import (
     t3_steps,
     unsupported_step_ids,
 )
+from rhylthyme.eval.gold import GoldProgram, load_gold_set
 
 pytestmark = pytest.mark.unit
 
@@ -307,10 +302,10 @@ class TestRendering:
         """patterns/baseline.md is the checked-in rendered copy of the prompt."""
         assert (
             BASELINE_MD.exists()
-        ), "run `python -m rhylthyme_cli_runner.eval.patterns.baseline`"
+        ), "run `python -m rhylthyme.cli.eval.patterns.baseline`"
         assert BASELINE_MD.read_text(encoding="utf-8") == render_markdown(), (
             "patterns/baseline.md is stale; regenerate with "
-            "`python -m rhylthyme_cli_runner.eval.patterns.baseline`"
+            "`python -m rhylthyme.cli.eval.patterns.baseline`"
         )
 
     def test_pattern_render_returns_turns(self):
@@ -590,7 +585,7 @@ class TestRunHarness:
         assert "nope" in str(info.value) and "p00" in str(info.value)
 
     def test_from_cache_results_json_is_byte_identical(self, tmp_path):
-        from rhylthyme_cli_runner.eval.report import stamp, write_results
+        from rhylthyme.eval.report import stamp, write_results
 
         golds = _gold_set(2)
         first = run_harness(
@@ -1006,7 +1001,7 @@ def test_gold_set_echo_scores_one(tmp_path):
 )
 @pytest.mark.skipif(not GOLD_DIR.exists(), reason="gold set not available")
 def test_live_one_program(tmp_path):
-    from rhylthyme_cli_runner.eval.llm import AnthropicClient
+    from rhylthyme.cli.eval.llm import AnthropicClient
 
     model = os.environ.get("RHYLTHYME_EVAL_MODEL", "claude-haiku-4-5")
     golds = load_gold_set(GOLD_DIR)[:1]

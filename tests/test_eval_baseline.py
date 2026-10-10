@@ -5,7 +5,7 @@ Two things are asserted here. First, that ``eval/baseline.json`` and
 ``eval/four-turn.json`` -- the files CI compares against -- keep the shape
 the harness writes and agree on the model pin, so a re-baseline that
 forgets half the job is caught. Second, that
-``rhylthyme_cli_runner.eval.compare`` fails on exactly the two regressions
+``rhylthyme.eval.compare`` fails on exactly the two regressions
 the plan names (relationships F1 down more than 5 points, end-to-end pass
 rate down at all) and passes on equal-or-better.
 
@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest
 
-from rhylthyme_cli_runner.eval.compare import (
+from rhylthyme.eval.compare import (
     DEFAULT_E2E_DROP,
     DEFAULT_REL_F1_DROP,
     Scores,
@@ -29,7 +29,7 @@ from rhylthyme_cli_runner.eval.compare import (
     parse_scores,
     render_comparison,
 )
-from rhylthyme_cli_runner.eval.metrics import ComponentScores
+from rhylthyme.eval.metrics import ComponentScores
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 EVAL_DIR = REPO_ROOT / "eval"
@@ -341,7 +341,7 @@ def _write(path, reference_summary):
 
 @pytest.mark.cli
 def test_cli_compare_passes_on_the_committed_file(cli_runner):
-    from rhylthyme_cli_runner.cli import cli
+    from rhylthyme.cli.main import cli
 
     result = cli_runner.invoke(
         cli,
@@ -361,7 +361,7 @@ def test_cli_compare_passes_on_the_committed_file(cli_runner):
 
 @pytest.mark.cli
 def test_cli_compare_exits_non_zero_on_a_regression(cli_runner, tmp_path):
-    from rhylthyme_cli_runner.cli import cli
+    from rhylthyme.cli.main import cli
 
     reference = _write(tmp_path / "four-turn.json", _summary(relationships_f1=0.60))
     results = _write(tmp_path / "results.json", _summary(relationships_f1=0.50))
@@ -384,7 +384,7 @@ def test_cli_compare_exits_non_zero_on_a_regression(cli_runner, tmp_path):
 
 @pytest.mark.cli
 def test_cli_compare_json_format(cli_runner, tmp_path):
-    from rhylthyme_cli_runner.cli import cli
+    from rhylthyme.cli.main import cli
 
     reference = _write(tmp_path / "four-turn.json", _summary())
     results = _write(tmp_path / "results.json", _summary())
@@ -409,7 +409,7 @@ def test_cli_compare_json_format(cli_runner, tmp_path):
 
 @pytest.mark.cli
 def test_cli_compare_thresholds_are_flags(cli_runner, tmp_path):
-    from rhylthyme_cli_runner.cli import cli
+    from rhylthyme.cli.main import cli
 
     reference = _write(tmp_path / "four-turn.json", _summary(end_to_end_pass=0.60))
     results = _write(tmp_path / "results.json", _summary(end_to_end_pass=0.55))
@@ -429,7 +429,7 @@ def test_cli_compare_thresholds_are_flags(cli_runner, tmp_path):
 @pytest.mark.cli
 def test_cli_eval_prompts_still_works_without_a_subcommand(cli_runner, tmp_path):
     """Making eval-prompts a group must not break its own flags."""
-    from rhylthyme_cli_runner.cli import cli
+    from rhylthyme.cli.main import cli
 
     result = cli_runner.invoke(
         cli, ["eval-prompts", "--gold", str(tmp_path), "--list-patterns"]

@@ -16,7 +16,7 @@ class TestCLIBasics:
 
     def test_cli_help(self, cli_runner):
         """Test CLI help command."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["--help"])
 
@@ -28,7 +28,7 @@ class TestCLIBasics:
 
     def test_cli_version(self, cli_runner):
         """Test CLI version command."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["--version"])
 
@@ -37,7 +37,7 @@ class TestCLIBasics:
 
     def test_validate_command_help(self, cli_runner):
         """Test validate command help."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["validate", "--help"])
 
@@ -47,7 +47,7 @@ class TestCLIBasics:
 
     def test_run_command_help(self, cli_runner):
         """Test run command help."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["run", "--help"])
 
@@ -63,7 +63,7 @@ class TestCLIValidation:
 
     def test_validate_simple_program(self, cli_runner, simple_program_file):
         """Test validating a simple program."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["validate", simple_program_file])
 
@@ -82,7 +82,7 @@ class TestCLIValidation:
 
     def test_validate_kitchen_program(self, cli_runner, kitchen_program_file):
         """Test validating a kitchen program."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["validate", kitchen_program_file])
 
@@ -103,7 +103,7 @@ class TestCLIValidation:
         self, cli_runner, kitchen_program_file, kitchen_environment_file
     ):
         """Test validating a program with environment."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(
             cli, ["validate", kitchen_program_file, "-e", kitchen_environment_file]
@@ -126,7 +126,7 @@ class TestCLIValidation:
 
     def test_validate_nonexistent_file(self, cli_runner):
         """Test validating a nonexistent file."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["validate", "nonexistent.json"])
 
@@ -135,7 +135,7 @@ class TestCLIValidation:
 
     def test_validate_invalid_json(self, cli_runner, temp_dir):
         """Test validating invalid JSON."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         invalid_file = os.path.join(temp_dir, "invalid.json")
         with open(invalid_file, "w") as f:
@@ -148,7 +148,7 @@ class TestCLIValidation:
 
     def test_validate_invalid_program(self, cli_runner, programs_dir):
         """Test validating a program with missing required fields."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         invalid_program = {
             "programId": "invalid",
@@ -172,7 +172,7 @@ class TestCLIEnvironments:
 
     def test_environments_command(self, cli_runner):
         """Test environments listing command."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["environments"])
 
@@ -182,7 +182,7 @@ class TestCLIEnvironments:
 
     def test_environment_info_command(self, cli_runner):
         """Test environment info command."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["environment-info", "test-env"])
 
@@ -197,7 +197,7 @@ class TestCLIPlanning:
 
     def test_plan_command(self, cli_runner, kitchen_program_file, temp_dir):
         """Test program planning command."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         output_file = os.path.join(temp_dir, "planned_output.json")
 
@@ -220,7 +220,7 @@ class TestCLIErrorHandling:
         self, cli_runner, simple_program_file, temp_dir
     ):
         """Test validation with invalid environment file."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         invalid_env = os.path.join(temp_dir, "invalid_env.json")
         with open(invalid_env, "w") as f:
@@ -235,7 +235,7 @@ class TestCLIErrorHandling:
 
     def test_missing_required_arguments(self, cli_runner):
         """Test commands with missing required arguments."""
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         # Validate without program file
         result = cli_runner.invoke(cli, ["validate"])
@@ -255,7 +255,7 @@ def test_cli_with_real_examples(cli_runner, examples_dir):
 
     import glob
 
-    from rhylthyme_cli_runner.cli import cli
+    from rhylthyme.cli.main import cli
 
     programs_dir = os.path.join(examples_dir, "programs")
     if not os.path.exists(programs_dir):
@@ -283,7 +283,7 @@ def test_cli_with_real_examples(cli_runner, examples_dir):
 
 def _write_run_record(runs_dir, program_id, run_id, started_at, outcome, actual_end):
     """Write a minimal, schema-valid run record and return its path."""
-    from rhylthyme_cli_runner.history import write_run
+    from rhylthyme.history import write_run
 
     record = {
         "schemaVersion": "0.1.0-alpha",
@@ -381,7 +381,7 @@ def thanksgiving_run(temp_dir):
     """
     import shutil
 
-    from rhylthyme_cli_runner.history import write_run
+    from rhylthyme.history import write_run
 
     timeline = os.path.normpath(
         os.path.join(os.path.dirname(__file__), "..", "..", "rhylthyme-timeline")
@@ -416,14 +416,14 @@ class TestRunsCommands:
     """Test `rhylthyme runs list` / `rhylthyme runs show`."""
 
     def test_runs_help_lists_subcommands(self, cli_runner):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["runs", "--help"])
         assert result.exit_code == 0
         assert "list" in result.output and "show" in result.output
 
     def test_run_command_has_record_options(self, cli_runner):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["run", "--help"])
         assert result.exit_code == 0
@@ -431,7 +431,7 @@ class TestRunsCommands:
         assert "--no-record" in result.output
 
     def test_runs_list_newest_first(self, cli_runner, recorded_runs):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(
             cli, ["runs", "list", "prog-a", "--runs-dir", recorded_runs]
@@ -458,7 +458,7 @@ class TestRunsCommands:
     def test_runs_shorthand_and_program_file_argument(
         self, cli_runner, recorded_runs, programs_dir
     ):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         program_file = os.path.join(programs_dir, "prog_a.json")
         with open(program_file, "w") as fh:
@@ -472,7 +472,7 @@ class TestRunsCommands:
         assert len(rows) == 3
 
     def test_runs_list_all_programs_and_json(self, cli_runner, recorded_runs):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(
             cli, ["runs", "list", "--runs-dir", recorded_runs, "--json"]
@@ -488,7 +488,7 @@ class TestRunsCommands:
         assert {d["programId"] for d in data} == {"prog-a", "prog-b"}
 
     def test_runs_list_empty(self, cli_runner, temp_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(
             cli, ["runs", "list", "nothing", "--runs-dir", temp_dir]
@@ -499,7 +499,7 @@ class TestRunsCommands:
     def test_runs_dir_from_environment_variable(
         self, cli_runner, recorded_runs, monkeypatch
     ):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         monkeypatch.setenv("RHYLTHYME_RUNS_DIR", recorded_runs)
         result = cli_runner.invoke(cli, ["runs", "list", "prog-b"])
@@ -507,7 +507,7 @@ class TestRunsCommands:
         assert "2026-09-13T10:00:00Z-dddd" in result.output
 
     def test_runs_show_table(self, cli_runner, recorded_runs):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(
             cli,
@@ -539,7 +539,7 @@ class TestRunsCommands:
         assert "+0:00:02" in prep and "timer" in prep
 
     def test_runs_show_by_path_prefix_and_json(self, cli_runner, recorded_runs):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         # unique prefix
         result = cli_runner.invoke(
@@ -555,7 +555,7 @@ class TestRunsCommands:
         assert json.loads(result.output)["programId"] == "prog-b"
 
     def test_runs_show_unknown(self, cli_runner, recorded_runs):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(
             cli, ["runs", "show", "nope", "--runs-dir", recorded_runs]
@@ -563,7 +563,7 @@ class TestRunsCommands:
         assert result.exit_code == 1
 
     def test_runs_show_has_svg_options(self, cli_runner):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["runs", "show", "--help"])
         assert result.exit_code == 0
@@ -576,8 +576,8 @@ class TestRunsCommands:
         """`runs show --svg` renders the planned-vs-actual overlay via Node."""
         import xml.etree.ElementTree as ET
 
-        from rhylthyme_cli_runner.cli import cli
-        from rhylthyme_cli_runner.history.render import find_node, find_renderer
+        from rhylthyme.cli.history.render import find_node, find_renderer
+        from rhylthyme.cli.main import cli
 
         if find_node() is None or find_renderer() is None:
             pytest.skip("node or the JavaScript timeline renderer is not available")
@@ -623,8 +623,8 @@ class TestRunsCommands:
     def test_runs_show_svg_finds_the_program_by_id(
         self, cli_runner, thanksgiving_run, temp_dir, monkeypatch
     ):
-        from rhylthyme_cli_runner.cli import cli
-        from rhylthyme_cli_runner.history.render import find_node, find_renderer
+        from rhylthyme.cli.history.render import find_node, find_renderer
+        from rhylthyme.cli.main import cli
 
         if find_node() is None or find_renderer() is None:
             pytest.skip("node or the JavaScript timeline renderer is not available")
@@ -641,13 +641,11 @@ class TestRunsCommands:
     def test_runs_show_svg_without_a_program_explains_itself(
         self, cli_runner, temp_dir, recorded_runs, monkeypatch
     ):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         # No program anywhere has programId 'prog-a'.
         monkeypatch.setenv("RHYLTHYME_PROGRAMS_DIR", temp_dir)
-        monkeypatch.setattr(
-            "rhylthyme_cli_runner.history.store._PROGRAM_SEARCH_PATHS", ()
-        )
+        monkeypatch.setattr("rhylthyme.history.store._PROGRAM_SEARCH_PATHS", ())
         result = cli_runner.invoke(
             cli,
             [
@@ -673,7 +671,7 @@ class TestEvalPrompts:
         import shutil
         from pathlib import Path
 
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         if not examples_dir:
             pytest.skip("Examples directory not available")
@@ -713,14 +711,14 @@ class TestEvalPrompts:
             assert value == (0.0 if key == "unsupported_rate" else 1.0), (key, value)
 
     def test_requires_score_only(self, cli_runner, tmp_path):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["eval-prompts", "--gold", str(tmp_path)])
         assert result.exit_code != 0
         assert "score-only" in result.output
 
     def test_help_lists_command(self, cli_runner):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["--help"])
         assert result.exit_code == 0
@@ -757,7 +755,7 @@ class TestEvalPromptsLive:
         return path
 
     def test_live_then_from_cache(self, cli_runner, gold_dir, tmp_path):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         fake = self._fake_file(gold_dir, tmp_path)
         out = tmp_path / "run"
@@ -810,7 +808,7 @@ class TestEvalPromptsLive:
         assert second["meta"]["from_cache"] is True
 
     def test_from_cache_miss_fails_clearly(self, cli_runner, gold_dir, tmp_path):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         fake = self._fake_file(gold_dir, tmp_path)
         result = cli_runner.invoke(
@@ -834,7 +832,7 @@ class TestEvalPromptsLive:
         assert "cache miss" in result.output
 
     def test_only_limits_the_run(self, cli_runner, gold_dir, tmp_path):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         fake = self._fake_file(gold_dir, tmp_path)
         out = tmp_path / "only"
@@ -867,7 +865,7 @@ class TestEvalPromptsLive:
         ]
 
     def test_only_unknown_slug_is_a_usage_error(self, cli_runner, gold_dir, tmp_path):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(
             cli,
@@ -887,7 +885,7 @@ class TestEvalPromptsLive:
         assert "not-a-slug" in result.output
 
     def test_unknown_pattern_and_missing_model(self, cli_runner, gold_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(
             cli,
@@ -918,7 +916,7 @@ def synthetic_runs_dir(temp_dir):
     author's own number, so it cannot. Returns
     ``(runs_dir, program_file, corpus_file)``.
     """
-    from rhylthyme_cli_runner.history import synthesize_runs
+    from rhylthyme.history import synthesize_runs
 
     timeline = os.path.normpath(
         os.path.join(os.path.dirname(__file__), "..", "..", "rhylthyme-timeline")
@@ -965,7 +963,7 @@ class TestRunsEvaluate:
     """`rhylthyme runs evaluate` (plan Phase 7)."""
 
     def test_listed_in_the_runs_help(self, cli_runner):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["runs", "--help"])
         assert result.exit_code == 0
@@ -974,7 +972,7 @@ class TestRunsEvaluate:
     def test_table_reports_predicted_against_planned(
         self, cli_runner, synthetic_runs_dir
     ):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         runs_dir, program_file, _corpus = synthetic_runs_dir
         result = cli_runner.invoke(
@@ -993,7 +991,7 @@ class TestRunsEvaluate:
         assert "Claim" in result.output
 
     def test_json_output_is_stable_and_complete(self, cli_runner, synthetic_runs_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         runs_dir, program_file, _corpus = synthetic_runs_dir
         args = [
@@ -1016,7 +1014,7 @@ class TestRunsEvaluate:
         assert rows["turkey-roast"]["improvement"] > 0.8
 
     def test_holdout_and_min_runs_flags(self, cli_runner, synthetic_runs_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         runs_dir, program_file, _corpus = synthetic_runs_dir
         result = cli_runner.invoke(
@@ -1055,7 +1053,7 @@ class TestRunsEvaluate:
     def test_markdown_output_and_out_file(
         self, cli_runner, synthetic_runs_dir, temp_dir
     ):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         runs_dir, program_file, _corpus = synthetic_runs_dir
         out = os.path.join(temp_dir, "evaluation.md")
@@ -1080,7 +1078,7 @@ class TestRunsEvaluate:
         assert "| Step | Type |" in text
 
     def test_all_programs(self, cli_runner, synthetic_runs_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         runs_dir, _program_file, _corpus = synthetic_runs_dir
         result = cli_runner.invoke(
@@ -1090,7 +1088,7 @@ class TestRunsEvaluate:
         assert "thanksgiving-one-oven" in result.output
 
     def test_needs_a_program_or_all(self, cli_runner, synthetic_runs_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         runs_dir, _program_file, _corpus = synthetic_runs_dir
         result = cli_runner.invoke(cli, ["runs", "evaluate", "--runs-dir", runs_dir])
@@ -1098,7 +1096,7 @@ class TestRunsEvaluate:
         assert "Give a programId or program file, or --all" in result.output
 
     def test_no_runs_is_an_error(self, cli_runner, temp_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(
             cli,
@@ -1119,7 +1117,7 @@ class TestRunHistoryFlags:
     """`rhylthyme run --history / --no-history / --predict-context`."""
 
     def test_flags_are_documented(self, cli_runner):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = cli_runner.invoke(cli, ["run", "--help"])
         assert result.exit_code == 0
@@ -1128,7 +1126,7 @@ class TestRunHistoryFlags:
         assert "offsetsUse" in result.output
 
     def test_history_file_feeds_the_prediction(self, synthetic_runs_dir):
-        from rhylthyme_cli_runner.program_runner import prepare_predictions
+        from rhylthyme.cli.tui import prepare_predictions
 
         _runs_dir, program_file, corpus_file = synthetic_runs_dir
         with open(program_file, encoding="utf-8") as fh:
@@ -1149,7 +1147,7 @@ class TestRunHistoryFlags:
         assert any("20 recorded run" in m for m in messages)
 
     def test_the_runs_directory_is_the_default_source(self, synthetic_runs_dir):
-        from rhylthyme_cli_runner.program_runner import prepare_predictions
+        from rhylthyme.cli.tui import prepare_predictions
 
         runs_dir, program_file, _corpus = synthetic_runs_dir
         with open(program_file, encoding="utf-8") as fh:
@@ -1167,7 +1165,7 @@ class TestRunHistoryFlags:
         )
 
     def test_no_history_and_no_flag_predict_nothing(self, synthetic_runs_dir):
-        from rhylthyme_cli_runner.program_runner import prepare_predictions
+        from rhylthyme.cli.tui import prepare_predictions
 
         runs_dir, program_file, _corpus = synthetic_runs_dir
         with open(program_file, encoding="utf-8") as fh:
@@ -1198,7 +1196,7 @@ class TestRunHistoryFlags:
     def test_no_recorded_runs_falls_back_to_the_plan(
         self, synthetic_runs_dir, temp_dir
     ):
-        from rhylthyme_cli_runner.program_runner import prepare_predictions
+        from rhylthyme.cli.tui import prepare_predictions
 
         _runs_dir, program_file, _corpus = synthetic_runs_dir
         with open(program_file, encoding="utf-8") as fh:
@@ -1218,7 +1216,7 @@ class TestRunHistoryFlags:
 
     def test_executor_controlled_steps_are_never_predicted(self, synthetic_runs_dir):
         """The verdicts are passed to the lookup, so a choice is not forecast."""
-        from rhylthyme_cli_runner.program_runner import prepare_predictions
+        from rhylthyme.cli.tui import prepare_predictions
 
         runs_dir, program_file, corpus_file = synthetic_runs_dir
         with open(program_file, encoding="utf-8") as fh:

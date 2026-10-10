@@ -8,7 +8,7 @@ import types
 import pytest
 from click.testing import CliRunner
 
-from rhylthyme_cli_runner.cli import cli
+from rhylthyme.cli.main import cli
 
 PROGRAM = {
     "schemaVersion": "0.3.0-alpha",
@@ -176,7 +176,7 @@ def test_an_invalid_import_is_reported_and_not_published(fake, tmp_path):
 
 
 def test_publish_after_import(fake, tmp_path, monkeypatch):
-    from rhylthyme_cli_runner.remote import cli as remote
+    from rhylthyme.cli.remote import cli as remote
 
     seen = {}
 
@@ -225,11 +225,11 @@ def test_search_and_importers(fake):
 def test_without_the_importers_package_the_message_says_how_to_get_it(monkeypatch):
     monkeypatch.setitem(sys.modules, "rhylthyme_importers", None)
     r = CliRunner().invoke(cli, ["import", "https://fake.example/dinner"])
-    assert r.exit_code != 0 and "pip install rhylthyme-importers" in r.output
+    assert r.exit_code != 0 and "rhylthyme[importers]" in r.output
 
 
 def test_a_text_importer_gets_a_urls_body(fake, monkeypatch):
-    from rhylthyme_cli_runner.remote import cli as remote
+    from rhylthyme.cli.remote import cli as remote
 
     monkeypatch.setattr(
         remote, "_fetch_bytes", lambda url, limit=0: b"def run(protocol): pass\n"
@@ -252,7 +252,7 @@ def test_a_missing_local_file_says_so(fake, tmp_path):
 
 def test_review_needs_a_login_before_any_work(fake, monkeypatch):
     monkeypatch.delenv("RHYLTHYME_TOKEN", raising=False)
-    from rhylthyme_cli_runner.remote import auth
+    from rhylthyme.cli.remote import auth
 
     monkeypatch.setattr(auth, "load_credentials", lambda path=None: None)
     r = CliRunner().invoke(
@@ -266,7 +266,7 @@ def test_review_sends_the_program_and_source_and_prints_findings(
     fake, monkeypatch, tmp_path
 ):
     monkeypatch.setenv("RHYLTHYME_TOKEN", "tok-1")
-    from rhylthyme_cli_runner.remote import mcp_client as MC
+    from rhylthyme.cli.remote import mcp_client as MC
 
     seen = {}
 

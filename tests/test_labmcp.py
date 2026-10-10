@@ -7,12 +7,13 @@ import time
 
 import pytest
 
-from rhylthyme_cli_runner.instruments import (
+from rhylthyme.cli.tui import run_program
+from rhylthyme.instruments import (
     InstrumentSetupError,
     attach_instruments,
     open_instruments,
 )
-from rhylthyme_cli_runner.program_runner import ProgramRunner, StepStatus, run_program
+from rhylthyme.program_runner import ProgramRunner, StepStatus
 
 pytestmark = pytest.mark.unit
 
@@ -105,8 +106,8 @@ def attach(runner, fakes, workcell=WORKCELL):
 
 
 def test_one_labmcp_step_and_one_galago_step_run_to_completion(fakes, tmp_path):
-    from rhylthyme_cli_runner.history.recorder import RunRecorder
-    from rhylthyme_cli_runner.history.store import validate_run
+    from rhylthyme.history.recorder import RunRecorder
+    from rhylthyme.history.store import validate_run
 
     runner = ProgramRunner(copy.deepcopy(PROGRAM), time_scale=100.0)
     recorder = RunRecorder(
@@ -202,7 +203,7 @@ def test_missing_package_gives_the_labmcp_install_hint(monkeypatch):
 
 
 def test_run_program_with_a_mixed_workcell(fakes, tmp_path, monkeypatch):
-    import rhylthyme_cli_runner.program_runner as pr
+    import rhylthyme.cli.tui as pr
 
     real_open = pr.open_instruments
     monkeypatch.setattr(
@@ -263,7 +264,7 @@ def test_a_failed_labmcp_step_sends_the_servers_safety_tools(fakes):
 
 
 def _findings(program, workcell=None):
-    from rhylthyme_cli_runner.instruments import instrument_findings
+    from rhylthyme.instruments import instrument_findings
 
     return [
         (f.code, f.where, f.severity) for f in instrument_findings(program, workcell)
@@ -328,7 +329,7 @@ def test_labmcp_steps_without_the_package_say_what_to_install(monkeypatch):
             }
         ]
     }
-    from rhylthyme_cli_runner.instruments import instrument_findings
+    from rhylthyme.instruments import instrument_findings
 
     [finding] = instrument_findings(program)
     assert finding.code == "instrument_unchecked" and "rhylthyme[labmcp]" in finding.fix
@@ -361,7 +362,7 @@ def live_run(fakes, tmp_path, monkeypatch):
     """run_program --live on the mixed workcell; curses never opens."""
     from rhylthyme_galago import FakeToolClient
 
-    import rhylthyme_cli_runner.program_runner as pr
+    import rhylthyme.cli.tui as pr
 
     server = fakes["server"]
     server.simulated = False
@@ -462,7 +463,7 @@ def test_a_simulated_server_refuses_a_live_start(live_run, capsys):
 def test_fill_durations_estimates_labmcp_steps_and_flags_them():
     pytest.importorskip("rhylthyme_labmcp")
     pytest.importorskip("rhylthyme_galago")
-    from rhylthyme_cli_runner.instruments import fill_instrument_durations
+    from rhylthyme.instruments import fill_instrument_durations
 
     program = copy.deepcopy(PROGRAM)
     program["tracks"][0]["steps"].insert(
@@ -500,7 +501,7 @@ def test_fill_durations_estimates_labmcp_steps_and_flags_them():
 
 def test_without_a_workcell_labmcp_steps_are_estimated_by_their_tool_type():
     pytest.importorskip("rhylthyme_labmcp")
-    from rhylthyme_cli_runner.instruments import fill_instrument_durations
+    from rhylthyme.instruments import fill_instrument_durations
 
     program = {
         "tracks": [
@@ -562,7 +563,7 @@ def test_the_same_opentrons_program_validates_and_runs_on_galago(tmp_path):
     pytest.importorskip("rhylthyme_galago")
     from rhylthyme_galago import FakeToolClient
 
-    from rhylthyme_cli_runner.instruments import instrument_findings
+    from rhylthyme.instruments import instrument_findings
 
     galago = {
         "id": "ot",
@@ -589,7 +590,7 @@ def test_the_same_opentrons_program_validates_and_runs_on_galago(tmp_path):
 
 def test_labmcp_opentrons_commands_are_checked_like_galagos():
     pytest.importorskip("rhylthyme_labmcp")
-    from rhylthyme_cli_runner.instruments import instrument_findings
+    from rhylthyme.instruments import instrument_findings
 
     labmcp_wc = {
         "id": "ot",

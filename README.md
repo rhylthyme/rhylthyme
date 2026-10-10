@@ -1,7 +1,8 @@
-# Rhylthyme CLI Runner
+# rhylthyme
 
-Command-line interface for validating and running Rhylthyme real-time program schedules,
-and for turning a plain-language request into one through the hosted Rhylthyme MCP server.
+The Python library and the `rhylthyme` command for Rhylthyme real-time program
+schedules: validate, plan and run them, and turn a plain-language request into
+one through the hosted Rhylthyme MCP server.
 
 ```bash
 pip install rhylthyme
@@ -19,7 +20,7 @@ the oven at the same time?
 pip install rhylthyme
 
 # 1. a program: the party, the kitchen and the setup crew, 13 steps
-curl -sO https://raw.githubusercontent.com/rhylthyme/rhylthyme-cli-runner/main/examples/recipe/birthday-party.json
+curl -sO https://raw.githubusercontent.com/rhylthyme/rhylthyme/main/examples/recipe/birthday-party.json
 
 # 2. is it well formed?
 rhylthyme validate birthday-party.json --strict
@@ -62,7 +63,7 @@ rhylthyme render birthday-party.json -o birthday-party.png \
   --style web --palette vivid --label-overflow outside --start-at "$(date +%F)T12:50:00"
 ```
 
-![Eighth birthday party: the party, the kitchen and the setup crew on a wall-clock axis](https://raw.githubusercontent.com/rhylthyme/rhylthyme-cli-runner/main/examples/recipe/birthday-party.png)
+![Eighth birthday party: the party, the kitchen and the setup crew on a wall-clock axis](https://raw.githubusercontent.com/rhylthyme/rhylthyme/main/examples/recipe/birthday-party.png)
 
 The pizzas go in 15 minutes after the games *start*, so they come out as the
 games end; the party bags get filled while everyone is eating. Try
@@ -77,7 +78,7 @@ Two repositories do related things and are easy to confuse. This one is the
 **command a person types**. [rhylthyme-mcp](https://github.com/rhylthyme/rhylthyme-mcp)
 is the **server an AI assistant talks to**.
 
-| | [rhylthyme-mcp](https://github.com/rhylthyme/rhylthyme-mcp) | [rhylthyme-cli-runner](https://github.com/rhylthyme/rhylthyme-cli-runner) |
+| | [rhylthyme-mcp](https://github.com/rhylthyme/rhylthyme-mcp) | [rhylthyme](https://github.com/rhylthyme/rhylthyme) |
 |---|---|---|
 | What it is | The MCP **server**: the tools an AI assistant calls | A command-line **program**: the `rhylthyme` command |
 | Who uses it | Claude, ChatGPT, Cursor or any MCP client, on a person's behalf | A person at a terminal, a script, or CI |
@@ -104,9 +105,10 @@ Use this repository if you have a program file and a terminal, want timers in
 the terminal, or keep run records. Use rhylthyme-mcp to connect Claude, ChatGPT
 or another assistant, or to read or self-host the server.
 
-Two names to keep apart: `rhylthyme-cli-runner` on PyPI is this tool (command
+Two names to keep apart: `rhylthyme` on PyPI is this tool (command
 `rhylthyme`); `rhylthyme-mcp` on PyPI is the server's stdio bridge (command
-`rhylthyme-mcp`). The program format itself is defined in
+`rhylthyme-mcp`). This repository was called `rhylthyme-cli-runner` until 0.5;
+that PyPI package now only installs `rhylthyme`. The program format itself is defined in
 [rhylthyme-spec](https://github.com/rhylthyme/rhylthyme-spec), with examples in
 [rhylthyme-examples](https://github.com/rhylthyme/rhylthyme-examples).
 
@@ -116,8 +118,8 @@ Two names to keep apart: `rhylthyme-cli-runner` on PyPI is this tool (command
 
 ```bash
 # Clone the repository
-git clone https://github.com/rhylthyme/rhylthyme-cli-runner.git
-cd rhylthyme-cli-runner
+git clone https://github.com/rhylthyme/rhylthyme.git
+cd rhylthyme
 
 # Install the package
 pip install -e .
@@ -129,9 +131,31 @@ pip install -e ".[dev]"
 ### From PyPI
 
 ```bash
-pip install rhylthyme            # this package, the importers and the renderer
-pip install rhylthyme-cli-runner   # this package alone
+pip install rhylthyme                  # the library and the rhylthyme command
+pip install 'rhylthyme[importers]'     # plus `rhylthyme import` (recipes, protocols)
+pip install 'rhylthyme[timeline]'      # plus `rhylthyme render` (figures; needs Node.js)
+pip install 'rhylthyme[all]'           # both: what `pip install rhylthyme` gave up to 0.2.9
 ```
+
+Lab instruments are extras too: `rhylthyme[galago]`, `rhylthyme[labmcp]`.
+
+### As a library
+
+The package has two layers. `rhylthyme` is the importable API, with no network
+and no terminal dependencies; `rhylthyme.cli` is the command, a thin layer
+over it (the curses runner, sign-in, publishing and the bridge live there).
+
+```python
+from rhylthyme import load_program_file, validate_program_structured
+from rhylthyme_spec import get_program_schema_path
+
+schema = load_program_file(get_program_schema_path("0.3.0-alpha"))
+result = validate_program_structured(load_program_file("dinner.json"), schema)
+print(result["is_valid"], [f["code"] for f in result["findings"]])
+```
+
+Code that still imports `rhylthyme_cli_runner` keeps working through the
+`rhylthyme-cli-runner` package, with a `DeprecationWarning`.
 
 ## Getting the Examples
 
@@ -140,21 +164,21 @@ The example programs referenced in this documentation are maintained in a separa
 ### Option 1: Clone the Examples Repository Alongside
 
 ```bash
-# Navigate to the parent directory of rhylthyme-cli-runner
+# Navigate to the parent directory of rhylthyme
 cd ..
 
 # Clone the examples repository
 git clone https://github.com/rhylthyme/rhylthyme-examples.git
 
 # Run examples using relative paths
-cd rhylthyme-cli-runner
+cd rhylthyme
 rhylthyme run ../rhylthyme-examples/programs/breakfast_schedule.json
 ```
 
 ### Option 2: Clone Examples as a Subdirectory
 
 ```bash
-# From within the rhylthyme-cli-runner directory
+# From within the rhylthyme directory
 git clone https://github.com/rhylthyme/rhylthyme-examples.git examples
 
 # Run examples directly
@@ -431,7 +455,7 @@ rhylthyme mcp-test --json --strict         # cron / CI: warnings fail too
 
 Requests carry `mcp-test` in the User-Agent so the hosted server logs the
 errors these checks provoke without alerting anyone. The same suite is
-importable (`rhylthyme_cli_runner.remote.checks.run_suite`), and
+importable (`rhylthyme.cli.remote.checks.run_suite`), and
 `RHYLTHYME_MCP_LIVE=1 pytest tests/test_mcp_checks.py` runs it live.
 
 ### `rhylthyme login` / `logout` / `whoami`
@@ -637,7 +661,7 @@ baseline run cost **$1.10** for 24 programs and 49 calls on
 four-turn run over the same 24 cost **$2.20** for 111 calls (969k / 246k)
 — four turns instead of one, each carrying the whole conversation so far.
 The run prints its own token totals and an estimated cost from the price
-table in `src/rhylthyme_cli_runner/eval/llm.py` (prices as of
+table in `src/rhylthyme/eval/llm.py` (prices as of
 2026-06-24); an unpriced model reports `unknown` instead of a number.
 `--limit`/`--only` keep a trial run cheap.
 
@@ -789,7 +813,7 @@ is the prompt the MCP server ships. A parity test extracts the JS exports
 with `node` and fails on any drift; check it by hand with
 
 ```bash
-python -m rhylthyme_cli_runner.eval.patterns.four_turn
+python -m rhylthyme.cli.eval.patterns.four_turn
 ```
 
 `eval/patterns/baseline.py` is frozen at the single-message prompt as of
@@ -797,7 +821,7 @@ Phase 2 and is deliberately *not* in step with today's `index.js`; that
 is what keeps `eval/baseline.json` reproducible from the cache.
 `eval/patterns/baseline.md` is its rendered copy (server `instructions` +
 `rhylthyme://guide/authoring` + the `plan_schedule` message), regenerated
-with `python -m rhylthyme_cli_runner.eval.patterns.baseline`; a test
+with `python -m rhylthyme.cli.eval.patterns.baseline`; a test
 fails if it goes stale.
 
 **Tests.** The harness is unit-tested against a fake client; nothing in

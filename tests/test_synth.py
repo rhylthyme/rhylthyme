@@ -13,7 +13,7 @@ import os
 
 import pytest
 
-from rhylthyme_cli_runner.history import (
+from rhylthyme.history import (
     build_report,
     duration_stats,
     is_usable_run,
@@ -23,7 +23,7 @@ from rhylthyme_cli_runner.history import (
     synthesize_runs,
     validate_run,
 )
-from rhylthyme_cli_runner.history.synth import lognormal_factor
+from rhylthyme.history.synth import lognormal_factor
 
 THANKSGIVING = os.path.join(
     os.path.dirname(__file__),
@@ -165,7 +165,7 @@ class TestSchemaValidity:
         }
 
     def test_planned_comes_from_the_timing_resolver(self, mixed_program):
-        from rhylthyme_cli_runner.history import freeze_planned
+        from rhylthyme.history import freeze_planned
 
         planned = freeze_planned(mixed_program)
         record = synthesize_runs(mixed_program, 1, seed=5)[0]

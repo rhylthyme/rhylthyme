@@ -8,9 +8,9 @@ import time
 import pytest
 from test_drivers import FakeDriver
 
-from rhylthyme_cli_runner import drivers as D
-from rhylthyme_cli_runner.instruments import attach_instruments
-from rhylthyme_cli_runner.program_runner import ProgramRunner, StepStatus
+from rhylthyme import drivers as D
+from rhylthyme.instruments import attach_instruments
+from rhylthyme.program_runner import ProgramRunner, StepStatus
 
 pytestmark = pytest.mark.unit
 
@@ -228,8 +228,8 @@ def test_a_tool_already_stopped_is_not_stopped_again_on_abort(fake):
 
 
 def test_closing_mid_run_stops_the_tools_and_records_it(fake, tmp_path):
-    from rhylthyme_cli_runner.history.recorder import RunRecorder
-    from rhylthyme_cli_runner.history.store import validate_run
+    from rhylthyme.history.recorder import RunRecorder
+    from rhylthyme.history.store import validate_run
 
     fake.held = {"wait_for_temperature"}
     prog = program(HEAT)

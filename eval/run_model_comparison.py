@@ -24,8 +24,8 @@ costs nothing, to produce one consolidated results.json per cell.
 from __future__ import annotations
 
 import argparse
-import re
 import json
+import re
 import subprocess
 import sys
 import time
@@ -103,7 +103,7 @@ def infra_error(results_file: Path) -> bool:
 
 
 def run_cli(args: list[str]) -> subprocess.CompletedProcess:
-    cmd = [sys.executable, "-m", "rhylthyme_cli_runner.cli", "eval-prompts", *args]
+    cmd = [sys.executable, "-m", "rhylthyme.cli.main", "eval-prompts", *args]
     return subprocess.run(cmd, capture_output=True, text=True)
 
 
@@ -170,7 +170,7 @@ def main() -> None:
     args = ap.parse_args()
 
     sys.path.insert(0, str(HERE.parent / "src"))
-    from rhylthyme_cli_runner.eval.llm import price_for
+    from rhylthyme.cli.eval.llm import price_for
 
     if price_for(args.model) is None:
         sys.exit(
@@ -251,7 +251,7 @@ def main() -> None:
             cmd = [
                 sys.executable,
                 "-m",
-                "rhylthyme_cli_runner.cli",
+                "rhylthyme.cli.main",
                 "eval-prompts",
                 "--gold",
                 str(GOLD),

@@ -267,7 +267,7 @@ environment variable.
 
 - **`rhylthyme: command not found`**: the package installs a `rhylthyme` script
   into the environment's `bin`; activate that environment, or run
-  `python -m rhylthyme_cli_runner.cli ...`.
+  `python -m rhylthyme ...`.
 - **`No module named 'pkg_resources'`** on validate: an old `rhylthyme-spec` is
   installed; `pip install -U "rhylthyme-spec>=0.2.0a0"`.
 - **`publish` says the program is invalid but `validate` passed**: the server

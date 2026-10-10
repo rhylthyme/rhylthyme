@@ -26,10 +26,10 @@ from click.testing import CliRunner
 # Add the src directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from rhylthyme_cli_runner.cli import cli
-from rhylthyme_cli_runner.environment_loader import EnvironmentLoader
-from rhylthyme_cli_runner.program_runner import ProgramRunner, StepStatus
-from rhylthyme_cli_runner.validate_program import validate_program_file
+from rhylthyme.cli.main import cli
+from rhylthyme.environment_loader import EnvironmentLoader
+from rhylthyme.program_runner import ProgramRunner, StepStatus
+from rhylthyme.validate_program import validate_program_file
 
 
 class TestExamplesIntegration(unittest.TestCase):

@@ -15,8 +15,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import pytest
 from click.testing import CliRunner
 
-from rhylthyme_cli_runner.cli import cli
-from rhylthyme_cli_runner.remote import checks
+from rhylthyme.cli.main import cli
+from rhylthyme.cli.remote import checks
 
 pytestmark = pytest.mark.unit
 
@@ -423,7 +423,7 @@ def test_cli_exit_codes_json_and_filters(server, monkeypatch):
 
 
 def test_fixture_is_a_valid_program():
-    from rhylthyme_cli_runner.validate_program import perform_additional_validations
+    from rhylthyme.validate_program import perform_additional_validations
 
     assert perform_additional_validations(copy.deepcopy(checks.FIXTURE)) == []
 
@@ -433,7 +433,7 @@ def test_fixture_is_a_valid_program():
     reason="set RHYLTHYME_MCP_LIVE=1 to hit the hosted server",
 )
 def test_live_hosted_server_has_no_failures():
-    from rhylthyme_cli_runner.remote.mcp_client import base_url
+    from rhylthyme.cli.remote.mcp_client import base_url
 
     report = checks.run_suite(checks.SuiteOptions(base_url=base_url()))
     assert [

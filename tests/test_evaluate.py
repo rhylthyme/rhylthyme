@@ -22,8 +22,8 @@ import os
 
 import pytest
 
-from rhylthyme_cli_runner.history import synthesize_runs
-from rhylthyme_cli_runner.history.evaluate import (
+from rhylthyme.history import synthesize_runs
+from rhylthyme.history.evaluate import (
     REASON_NO_USABLE_RUNS,
     REASON_TOO_FEW_RUNS,
     evaluate_all,

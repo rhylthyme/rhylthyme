@@ -1,6 +1,6 @@
 """`rhylthyme plan` must accept the duration forms the schema allows."""
 
-from rhylthyme_cli_runner.program_planner import Step
+from rhylthyme.program_planner import Step
 
 
 def _step(duration):

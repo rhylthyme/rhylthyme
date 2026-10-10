@@ -15,20 +15,15 @@ import os
 import pytest
 from click.testing import CliRunner
 
-from rhylthyme_cli_runner.history import (
+from rhylthyme.cli.history.report_cli import render_report
+from rhylthyme.history import (
     build_report,
     duration_stats,
     filter_since,
     percentile,
     synthesize_runs,
 )
-from rhylthyme_cli_runner.history.report import (
-    EXECUTOR_CONTROLLED,
-    INSUFFICIENT,
-    LAG,
-    PREDICTABLE,
-)
-from rhylthyme_cli_runner.history.report_cli import render_report
+from rhylthyme.history.report import EXECUTOR_CONTROLLED, INSUFFICIENT, LAG, PREDICTABLE
 
 LOW_CV = 0.05
 HIGH_CV = 0.60
@@ -423,7 +418,7 @@ class TestReportCommand:
 
     def test_table_output(self, program, temp_dir):
         self._runs(program, temp_dir)
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = CliRunner().invoke(
             cli, ["runs", "report", "report-test", "--runs-dir", temp_dir]
@@ -438,7 +433,7 @@ class TestReportCommand:
         path = os.path.join(programs_dir, "report_test.json")
         with open(path, "w") as fh:
             json.dump(program, fh)
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = CliRunner().invoke(
             cli, ["runs", "report", path, "--runs-dir", temp_dir, "--format", "json"]
@@ -454,7 +449,7 @@ class TestReportCommand:
         }
 
     def test_flags(self, program, temp_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         self._runs(program, temp_dir)
         runner = CliRunner()
@@ -501,7 +496,7 @@ class TestReportCommand:
         assert json.loads(since.output)["runsConsidered"] == 10
 
     def test_out_file(self, program, temp_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         self._runs(program, temp_dir)
         out = os.path.join(temp_dir, "report.md")
@@ -525,7 +520,7 @@ class TestReportCommand:
             assert fh.read().startswith("# Inferentiality report")
 
     def test_all_programs(self, program, temp_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         self._runs(program, temp_dir)
         other = dict(program, programId="other-program")
@@ -545,7 +540,7 @@ class TestReportCommand:
         assert [r["programId"] for r in payload] == ["other-program", "report-test"]
 
     def test_no_runs_is_an_error(self, temp_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = CliRunner().invoke(
             cli, ["runs", "report", "nothing-here", "--runs-dir", temp_dir]
@@ -554,7 +549,7 @@ class TestReportCommand:
         assert "No runs recorded" in result.output
 
     def test_program_or_all_is_required(self, temp_dir):
-        from rhylthyme_cli_runner.cli import cli
+        from rhylthyme.cli.main import cli
 
         result = CliRunner().invoke(cli, ["runs", "report", "--runs-dir", temp_dir])
         assert result.exit_code != 0
