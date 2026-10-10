@@ -53,8 +53,8 @@ pip install rhylthyme                        # Python 3.12+; the CLI, importers 
 rhylthyme --version
 ```
 
-The command itself is the `rhylthyme-cli-runner` package; from source:
-`pip install "git+https://github.com/rhylthyme/rhylthyme-cli-runner"`.
+The command itself is the `rhylthyme` package; from source:
+`pip install "git+https://github.com/rhylthyme/rhylthyme"`.
 
 **Installed as the `rhylthyme` Claude plugin?** Then the hosted MCP tools come
 with it, and `validate_program`, `analyze_schedule` and `visualize_schedule`
@@ -281,7 +281,7 @@ environment variable.
 
 ## Resources
 
-- Command-line tool: https://github.com/rhylthyme/rhylthyme-cli-runner
+- Command-line tool: https://github.com/rhylthyme/rhylthyme
 - Schema: https://github.com/rhylthyme/rhylthyme-spec
 - Example programs and environments: https://github.com/rhylthyme/rhylthyme-examples
 - MCP server (the same tools for MCP hosts): https://github.com/rhylthyme/rhylthyme-mcp
