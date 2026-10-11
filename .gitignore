@@ -5,7 +5,7 @@ TESTING_STATUS.md
 dist/
 pytest.ini
 pytest_examples.log
-src/rhylthyme.egg-info/
+*.egg-info/
 src/rhylthyme/__pycache__/
 tests/__pycache__/
 
