@@ -85,6 +85,7 @@ print(result["is_valid"], [f["code"] for f in result["findings"]])
 | | |
 |---|---|
 | Documentation | [docs.rhylthyme.com](https://docs.rhylthyme.com) ([command reference](https://docs.rhylthyme.com/development/command-reference/)) |
+| Embed in a web app | [Embed Rhylthyme in your app](https://docs.rhylthyme.com/development/embedding/): the player element, charts, timings, and the hosted API |
 | Program format | [rhylthyme-spec](https://github.com/rhylthyme/rhylthyme-spec) |
 | Example programs | [rhylthyme-examples](https://github.com/rhylthyme/rhylthyme-examples) |
 | MCP server | [rhylthyme-mcp](https://github.com/rhylthyme/rhylthyme-mcp) ([how it differs from this package](https://docs.rhylthyme.com/getting-started/rhylthyme-and-rhylthyme-mcp/)) |
