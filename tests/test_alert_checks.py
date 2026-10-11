@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from rhylthyme_cli_runner.alert_checks import alert_findings, parse_alert_offset
-from rhylthyme_cli_runner.validate_program import (
+from rhylthyme.alert_checks import alert_findings, parse_alert_offset
+from rhylthyme.validate_program import (
     normalize_time_fields,
     perform_additional_validations,
     perform_additional_validations_structured,

@@ -8,9 +8,9 @@ import time
 import pytest
 from test_drivers import FakeDriver
 
-from rhylthyme_cli_runner import drivers as D
-from rhylthyme_cli_runner.instruments import attach_instruments, instrument_findings
-from rhylthyme_cli_runner.program_runner import ProgramRunner, StepStatus
+from rhylthyme import drivers as D
+from rhylthyme.instruments import attach_instruments, instrument_findings
+from rhylthyme.program_runner import ProgramRunner, StepStatus
 
 pytestmark = pytest.mark.unit
 
@@ -218,8 +218,8 @@ def test_retry_resends_the_start_actions(fake):
 
 
 def test_the_run_record_keeps_every_call_with_its_phase(tmp_path):
-    from rhylthyme_cli_runner.history.recorder import RunRecorder
-    from rhylthyme_cli_runner.history.store import validate_run
+    from rhylthyme.history.recorder import RunRecorder
+    from rhylthyme.history.store import validate_run
 
     prog = program(HEAT, PH)
     runner = ProgramRunner(copy.deepcopy(prog), time_scale=100.0)
@@ -279,7 +279,7 @@ def test_steps_with_only_start_actions_and_no_duration_warn():
 
 
 def test_only_blocking_steps_get_estimated_durations():
-    from rhylthyme_cli_runner.instruments import fill_instrument_durations
+    from rhylthyme.instruments import fill_instrument_durations
 
     step = {k: v for k, v in HEAT.items() if k != "duration"}
     filled, lines = fill_instrument_durations(program(step, PH), WORKCELL)

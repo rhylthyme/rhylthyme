@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from rhylthyme_cli_runner.expand_replicates import expand_replicates
+from rhylthyme.expand_replicates import expand_replicates
 
 pytestmark = pytest.mark.unit
 
@@ -532,7 +532,7 @@ def test_expand_is_pure_and_0_2_0_programs_expand_as_before():
 
 @requires_examples
 def test_cookie_example_expands_to_expected_shape_and_timings():
-    from rhylthyme_cli_runner.validate_program import (
+    from rhylthyme.validate_program import (
         calculate_step_start_time,
         parse_duration_to_seconds,
     )
@@ -584,7 +584,7 @@ def gates_of(step):
 
 
 def timings_of(expanded):
-    from rhylthyme_cli_runner.validate_program import (
+    from rhylthyme.validate_program import (
         calculate_step_start_time,
         parse_duration_to_seconds,
     )

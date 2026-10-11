@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Setup script for Rhylthyme CLI Runner
+Setup script for rhylthyme: the library and the rhylthyme command
 """
 
 import os
@@ -14,33 +14,46 @@ def read_readme():
     if os.path.exists(readme_path):
         with open(readme_path, "r", encoding="utf-8") as f:
             return f.read()
-    return "Rhylthyme CLI Runner - Command-line interface for running and validating Rhylthyme programs"
+    return "Schedule work a person follows against a clock, and run or publish it."
 
 
 setup(
-    name="rhylthyme-cli-runner",
-    version="0.4.0a0",
-    description="CLI runner for Rhylthyme real-time program schedules",
+    name="rhylthyme",
+    version="0.5.0",
+    description=(
+        "Schedule work a person follows against a clock (recipes, lab protocols, "
+        "run-of-shows, workouts): validate, plan and run it, and publish it as a "
+        "live timeline."
+    ),
     long_description=read_readme(),
     long_description_content_type="text/markdown",
-    author="Rhylthyme Team",
-    author_email="team@rhylthyme.org",
-    url="https://github.com/rhylthyme/rhylthyme-cli-runner",
+    author="Jeremy Leipzig",
+    author_email="leipzig@gmail.com",
+    license="Apache-2.0",
+    url="https://github.com/rhylthyme/rhylthyme",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     package_data={
         # Prompt copies used by `eval-prompts --patterns baseline`.
-        "rhylthyme_cli_runner.eval.patterns": ["*.md"],
+        "rhylthyme.cli.eval.patterns": ["*.md"],
     },
+    # The base install is the library plus what the rhylthyme command itself
+    # needs (click, colorama); those are imported only inside rhylthyme.cli.
     install_requires=[
         "setuptools",
         "click>=8.0.0",
         "jsonschema>=4.0.0",
         "pyyaml>=6.0",
         "colorama>=0.4.0",
-        "rhylthyme-spec>=0.2.2a0",
+        "rhylthyme-spec>=0.2.3a0",  # step alerts
     ],
     extras_require={
+        # `rhylthyme import`: recipes and protocols from external sources
+        "importers": ["rhylthyme-importers>=0.4.6"],
+        # `rhylthyme render`: SVG, PNG and PDF figures (needs Node.js)
+        "timeline": ["rhylthyme-timeline>=2.0.0b5"],
+        # Everything `pip install rhylthyme` installed up to 0.2.9
+        "all": ["rhylthyme-importers>=0.4.6", "rhylthyme-timeline>=2.0.0b5"],
         # Instrument steps on galago-tools lab instruments (--workcell, rhylthyme bridge)
         "galago": ["rhylthyme-galago>=0.2.0a0"],
         # Instrument steps on LabMCP instrument servers (driver "labmcp" in a workcell)
@@ -72,7 +85,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "rhylthyme=rhylthyme_cli_runner.cli:main",
+            "rhylthyme=rhylthyme.cli:main",
         ],
     },
     python_requires=">=3.12",
@@ -87,10 +100,11 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: System :: Distributed Computing",
     ],
-    keywords="real-time, scheduling, logistics, cli, validation",
+    keywords="scheduling, timeline, recipes, lab-protocols, real-time, cli, validation",
     project_urls={
-        "Bug Reports": "https://github.com/rhylthyme/rhylthyme-cli-runner/issues",
-        "Source": "https://github.com/rhylthyme/rhylthyme-cli-runner",
-        "Documentation": "https://github.com/rhylthyme/rhylthyme-cli-runner#readme",
+        "Homepage": "https://www.rhylthyme.com",
+        "Documentation": "https://docs.rhylthyme.com",
+        "Bug Reports": "https://github.com/rhylthyme/rhylthyme/issues",
+        "Source": "https://github.com/rhylthyme/rhylthyme",
     },
 )

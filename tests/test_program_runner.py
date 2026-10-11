@@ -11,12 +11,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-import rhylthyme_cli_runner.program_runner as program_runner_module
-from rhylthyme_cli_runner.program_runner import (
-    ProgramRunner,
-    StepStatus,
-    split_instance_name,
-)
+import rhylthyme.cli.tui as tui_module
+import rhylthyme.program_runner as program_runner_module
+from rhylthyme.program_runner import ProgramRunner, StepStatus, split_instance_name
 
 
 @pytest.mark.unit
@@ -721,7 +718,7 @@ class TestVarianceFactorPrompt:
     """
 
     def test_declared_factors_are_normalised(self):
-        from rhylthyme_cli_runner.history.factors import declared_factors
+        from rhylthyme.history.factors import declared_factors
 
         factors = declared_factors(_factor_program())
         assert [f["key"] for f in factors] == ["turkeyKg", "oven"]
@@ -739,7 +736,7 @@ class TestVarianceFactorPrompt:
         )
 
     def test_answers_are_typed(self):
-        from rhylthyme_cli_runner.history.factors import (
+        from rhylthyme.history.factors import (
             collect_factors,
             declared_factors,
             prompt_for_factors,
@@ -753,10 +750,7 @@ class TestVarianceFactorPrompt:
         assert "gas/electric/convection" in stub.prompts[1]
 
     def test_enum_validation_reasks_then_accepts(self):
-        from rhylthyme_cli_runner.history.factors import (
-            declared_factors,
-            prompt_for_factors,
-        )
+        from rhylthyme.history.factors import declared_factors, prompt_for_factors
 
         messages = []
         stub = _Answers("1", "induction", "ELECTRIC")
@@ -771,10 +765,7 @@ class TestVarianceFactorPrompt:
         assert any("not one of" in m for m in messages)
 
     def test_a_bad_number_is_reasked(self):
-        from rhylthyme_cli_runner.history.factors import (
-            declared_factors,
-            prompt_for_factors,
-        )
+        from rhylthyme.history.factors import declared_factors, prompt_for_factors
 
         messages = []
         stub = _Answers("heavy", "6", "gas")
@@ -787,10 +778,7 @@ class TestVarianceFactorPrompt:
         assert any("not a number" in m for m in messages)
 
     def test_enter_skips_a_factor(self):
-        from rhylthyme_cli_runner.history.factors import (
-            declared_factors,
-            prompt_for_factors,
-        )
+        from rhylthyme.history.factors import declared_factors, prompt_for_factors
 
         stub = _Answers("", "gas")
         answers = prompt_for_factors(
@@ -799,10 +787,7 @@ class TestVarianceFactorPrompt:
         assert answers == {"oven": "gas"}
 
     def test_eof_skips_the_rest(self):
-        from rhylthyme_cli_runner.history.factors import (
-            declared_factors,
-            prompt_for_factors,
-        )
+        from rhylthyme.history.factors import declared_factors, prompt_for_factors
 
         stub = _Answers()  # raises EOFError immediately
         assert (
@@ -815,7 +800,7 @@ class TestVarianceFactorPrompt:
         )
 
     def test_flags_and_env_pre_answer_the_prompt(self, monkeypatch):
-        from rhylthyme_cli_runner.history.factors import collect_factors
+        from rhylthyme.history.factors import collect_factors
 
         monkeypatch.setenv("RHYLTHYME_FACTORS", "turkeyKg=7.2;oven=convection")
         stub = _Answers()  # nothing left to ask
@@ -838,7 +823,7 @@ class TestVarianceFactorPrompt:
         assert len(stub.prompts) == 1
 
     def test_invalid_presets_are_reported_and_dropped(self):
-        from rhylthyme_cli_runner.history.factors import collect_factors
+        from rhylthyme.history.factors import collect_factors
 
         messages = []
         answers = collect_factors(
@@ -854,7 +839,7 @@ class TestVarianceFactorPrompt:
         assert any("not declared" in m for m in messages)
 
     def test_no_prompt_flag_keeps_presets(self):
-        from rhylthyme_cli_runner.history.factors import collect_factors
+        from rhylthyme.history.factors import collect_factors
 
         stub = _Answers("6.4", "gas")
         answers = collect_factors(
@@ -869,7 +854,7 @@ class TestVarianceFactorPrompt:
         assert stub.prompts == []
 
     def test_a_program_without_factors_is_never_asked(self):
-        from rhylthyme_cli_runner.history.factors import collect_factors
+        from rhylthyme.history.factors import collect_factors
 
         stub = _Answers("x")
         program = _factor_program()
@@ -896,8 +881,8 @@ class TestFactorAnswersReachTheRecord:
             for _ in range(6):
                 runner.update()
 
-        monkeypatch.setattr(program_runner_module.curses, "wrapper", fake_wrapper)
-        written = program_runner_module.run_program(
+        monkeypatch.setattr(tui_module.curses, "wrapper", fake_wrapper)
+        written = tui_module.run_program(
             program_file, validate=False, runs_dir=temp_dir, **kwargs
         )
         assert written is not None
@@ -905,7 +890,7 @@ class TestFactorAnswersReachTheRecord:
             return json.load(fh)
 
     def test_factor_flags_land_in_user_tags(self, temp_dir, programs_dir, monkeypatch):
-        from rhylthyme_cli_runner.history import validate_run
+        from rhylthyme.history import validate_run
 
         path = self._program_file(programs_dir, _factor_program())
         record = self._run(
@@ -1179,7 +1164,7 @@ ROAST_PER_KG = 300.0
 
 
 def _synthetic_roast_history(program, n=20, seed=11):
-    from rhylthyme_cli_runner.history import synthesize_runs
+    from rhylthyme.history import synthesize_runs
 
     def law(step_id, planned, factors, rng):
         if step_id == "turkey-roast":
@@ -1249,7 +1234,7 @@ class TestPredictedOffsets:
         assert runner.predicted_anchor_seconds == {}
 
     def test_with_the_flag_the_peel_fires_from_the_predicted_end(self):
-        from rhylthyme_cli_runner.history import predict_durations
+        from rhylthyme.history import predict_durations
 
         program = _with_factors_and_offsets("predicted")
         history = _synthetic_roast_history(_with_factors_and_offsets())
@@ -1322,7 +1307,7 @@ class TestPredictedOffsets:
             assert runner.predicted_anchor_seconds == {}
 
     def test_the_record_says_which_durations_were_used(self, temp_dir):
-        from rhylthyme_cli_runner.history import RunRecorder, validate_run
+        from rhylthyme.history import RunRecorder, validate_run
 
         program = _with_factors_and_offsets("predicted")
         predictions = {
@@ -1365,7 +1350,7 @@ class TestPredictedOffsets:
         assert validate_run(record) == []
 
     def test_a_planned_run_records_offsets_use_planned(self, temp_dir):
-        from rhylthyme_cli_runner.history import RunRecorder, validate_run
+        from rhylthyme.history import RunRecorder, validate_run
 
         clock = _FakeClock()
         original = program_runner_module.time.time

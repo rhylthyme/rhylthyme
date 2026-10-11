@@ -1,5 +1,5 @@
 """
-Unit tests for the offline prompt-evaluation scorer (rhylthyme_cli_runner.eval).
+Unit tests for the offline prompt-evaluation scorer (rhylthyme.eval).
 
 Everything here is pure: hand-built programs, plus the gold set in
 rhylthyme-examples/gold scored against itself and against a perturbed copy.
@@ -11,8 +11,8 @@ from pathlib import Path
 
 import pytest
 
-from rhylthyme_cli_runner.eval import metrics as M
-from rhylthyme_cli_runner.eval.gold import (
+from rhylthyme.eval import metrics as M
+from rhylthyme.eval.gold import (
     GoldProgram,
     count_occurrences,
     load_gold_set,
@@ -20,17 +20,13 @@ from rhylthyme_cli_runner.eval.gold import (
     locate_quote,
     locate_quote_fuzzy,
 )
-from rhylthyme_cli_runner.eval.matcher import (
+from rhylthyme.eval.matcher import (
     flatten_steps,
     match_steps,
     normalize_name,
     overlap_ratio,
 )
-from rhylthyme_cli_runner.eval.report import (
-    render_markdown,
-    render_table,
-    write_results,
-)
+from rhylthyme.eval.report import render_markdown, render_table, write_results
 
 pytestmark = pytest.mark.unit
 

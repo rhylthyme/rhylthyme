@@ -28,8 +28,8 @@ import subprocess
 
 import pytest
 
-from rhylthyme_cli_runner.history import validate_run
-from rhylthyme_cli_runner.history.replay import (
+from rhylthyme.history import validate_run
+from rhylthyme.history.replay import (
     actual_ends,
     actual_intervals,
     executor_gated,
@@ -75,7 +75,7 @@ def record():
 
 @pytest.fixture
 def expanded_steps(program):
-    from rhylthyme_cli_runner.expand_replicates import expand_replicates
+    from rhylthyme.expand_replicates import expand_replicates
 
     return {
         step["stepId"]: step
@@ -118,7 +118,7 @@ class TestRecordFixture:
         assert sum(1 for v in signed.values() if v < -30) == 4
 
     def test_hashes_the_program_it_ran(self, record, program):
-        from rhylthyme_cli_runner.history import program_version
+        from rhylthyme.history import program_version
 
         assert record["programVersion"] == program_version(program)
 

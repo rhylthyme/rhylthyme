@@ -17,7 +17,7 @@ import pytest
 src_path = os.path.join(os.path.dirname(__file__), "..", "src")
 sys.path.insert(0, src_path)
 
-from rhylthyme_cli_runner.validate_program import validate_program_file_structured
+from rhylthyme.validate_program import validate_program_file_structured
 
 
 @pytest.mark.integration

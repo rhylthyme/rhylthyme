@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 
 # Import the validation function
-from rhylthyme_cli_runner.validate_program import validate_program_file_structured
+from rhylthyme.validate_program import validate_program_file_structured
 
 
 @pytest.mark.integration
@@ -205,7 +205,7 @@ class TestExampleValidation:
 def test_validation_imports():
     """Test that we can import validation modules successfully."""
     try:
-        from rhylthyme_cli_runner.validate_program import (
+        from rhylthyme.validate_program import (
             validate_program_file,
             validate_program_file_structured,
         )
@@ -219,10 +219,10 @@ def test_validation_imports():
 @pytest.mark.unit
 def test_validation_function_with_invalid_file():
     """Test validation function behavior with invalid files."""
-    from rhylthyme_cli_runner.validate_program import validate_program_file
+    from rhylthyme.validate_program import validate_program_file
 
     try:
-        import pkg_resources
+        import pkg_resources  # type: ignore[import-untyped]
 
         schema_file = pkg_resources.resource_filename(
             "rhylthyme_spec", "schemas/program_schema_0.2.0-alpha.json"
@@ -248,10 +248,10 @@ def test_validation_function_with_invalid_file():
 @pytest.mark.unit
 def test_validation_function_with_invalid_json(temp_dir):
     """Test validation function with invalid JSON."""
-    from rhylthyme_cli_runner.validate_program import validate_program_file
+    from rhylthyme.validate_program import validate_program_file
 
     try:
-        import pkg_resources
+        import pkg_resources  # type: ignore[import-untyped]
 
         schema_file = pkg_resources.resource_filename(
             "rhylthyme_spec", "schemas/program_schema_0.2.0-alpha.json"

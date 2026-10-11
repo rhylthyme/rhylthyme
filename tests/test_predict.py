@@ -9,11 +9,11 @@ Three contracts are pinned here:
    ``mcp-api/history.test.js``, which reads the same file). Any change to the
    lookup's semantics has to change the fixture, which makes the drift visible
    in both test suites at once.
-2. :mod:`rhylthyme_cli_runner.history.predict` carries its own copy of the
+2. :mod:`rhylthyme.history.predict` carries its own copy of the
    usable-run filter, because it is a byte-identical copy of
    ``rhylthyme_server/rhylthyme/predict.py`` and rhylthyme-server may not
    import this package. That copy is asserted against the real
-   :mod:`rhylthyme_cli_runner.history.usable` over every case of
+   :mod:`rhylthyme.history.usable` over every case of
    ``usable-cases.json``.
 3. The model recovers the generating law of
    ``tests/fixtures/history/thanksgiving-synth-runs.json``
@@ -27,9 +27,9 @@ import os
 
 import pytest
 
-from rhylthyme_cli_runner.history import predict as P
-from rhylthyme_cli_runner.history import predict_durations, predicted_seconds
-from rhylthyme_cli_runner.history import usable as U
+from rhylthyme.history import predict as P
+from rhylthyme.history import predict_durations, predicted_seconds
+from rhylthyme.history import usable as U
 
 FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures", "history")
 PREDICT_CASES = os.path.join(FIXTURE_DIR, "predict-cases.json")
@@ -170,7 +170,7 @@ def test_the_generating_law_holds_independently_of_the_fixture(case):
 def test_the_inlined_filter_agrees_with_the_real_one(case):
     """
     predict.py is a standalone copy (see its module docstring), so its filter
-    has to agree with rhylthyme_cli_runner.history.usable case for case.
+    has to agree with rhylthyme.history.usable case for case.
     """
     record = case["record"]
     assert P.is_usable_run(record) == U.is_usable_run(record), case["name"]
@@ -183,7 +183,7 @@ def test_the_inlined_filter_agrees_with_the_real_one(case):
 
 
 def test_the_inlined_percentile_agrees_with_the_real_one():
-    from rhylthyme_cli_runner.history import percentile
+    from rhylthyme.history import percentile
 
     for values in ([], [42], [1, 2], [5, 3, 1, 9, 7, 2, 8, 4, 6], [600.5, 601.25]):
         for q in (0.0, 0.10, 0.25, 0.5, 0.75, 0.90, 1.0):
@@ -290,7 +290,7 @@ def test_identical_context_beats_the_model_on_the_same_corpus(thanksgiving):
 def test_the_synthetic_corpus_is_usable_history(thanksgiving):
     """Every record the fixture carries is a measurement, or the rest is moot."""
     _program, runs = thanksgiving
-    from rhylthyme_cli_runner.history import validate_run
+    from rhylthyme.history import validate_run
 
     assert len(runs) == 20
     for record in runs:
@@ -305,7 +305,7 @@ def test_the_synthetic_corpus_is_usable_history(thanksgiving):
 
 def test_verdicts_accept_a_report_a_mapping_or_a_list(thanksgiving):
     program, runs = thanksgiving
-    from rhylthyme_cli_runner.history import build_report
+    from rhylthyme.history import build_report
 
     report = build_report(runs, program)
     by_map = predict_durations(

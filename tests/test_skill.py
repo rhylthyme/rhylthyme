@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from rhylthyme_cli_runner.cli import cli
+from rhylthyme.cli.main import cli
 
 SKILL = Path(__file__).resolve().parent.parent / "skills" / "rhylthyme"
 DOCS = sorted([SKILL / "SKILL.md", *(SKILL / "references").glob("*.md")])

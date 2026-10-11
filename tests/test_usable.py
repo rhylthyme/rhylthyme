@@ -14,7 +14,7 @@ import os
 
 import pytest
 
-from rhylthyme_cli_runner.history import (
+from rhylthyme.history import (
     is_usable_run,
     measured_steps,
     planned_duration,

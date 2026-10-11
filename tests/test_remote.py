@@ -16,9 +16,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import pytest
 from click.testing import CliRunner
 
-from rhylthyme_cli_runner.cli import cli
-from rhylthyme_cli_runner.remote import auth
-from rhylthyme_cli_runner.remote.mcp_client import (
+from rhylthyme.cli.main import cli
+from rhylthyme.cli.remote import auth
+from rhylthyme.cli.remote.mcp_client import (
     McpClient,
     ToolError,
     endpoint_for,
@@ -432,7 +432,7 @@ def test_generate_run_hands_the_saved_program_to_run(
     import sys
 
     # The package re-exports the `cli` group under the module's name.
-    cli_module = sys.modules["rhylthyme_cli_runner.cli"]
+    cli_module = sys.modules["rhylthyme.cli.main"]
 
     seen = {}
     monkeypatch.setattr(
@@ -498,7 +498,7 @@ def test_analyze_reports_conflicts_and_local_clock_times(
 
 
 def test_clock_to_iso():
-    from rhylthyme_cli_runner.remote.cli import _clock_to_iso
+    from rhylthyme.cli.remote.cli import _clock_to_iso
 
     now = datetime(2026, 11, 26, 14, 0).astimezone()
     assert _clock_to_iso("19:00", now).startswith("2026-11-26T19:00:00")
@@ -562,7 +562,7 @@ def test_publish_and_analyze_read_a_url_or_stdin(
 
 
 def test_clock_and_sources_reject_other_schemes():
-    from rhylthyme_cli_runner.remote.cli import _fetch_bytes
+    from rhylthyme.cli.remote.cli import _fetch_bytes
 
     with pytest.raises(ValueError):
         _fetch_bytes("file:///etc/passwd")

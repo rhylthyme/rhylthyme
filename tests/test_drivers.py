@@ -8,16 +8,16 @@ from typing import Any, Dict, List, Optional
 
 import pytest
 
-from rhylthyme_cli_runner import drivers as D
-from rhylthyme_cli_runner.instance_checks import Finding
-from rhylthyme_cli_runner.instruments import (
+from rhylthyme import drivers as D
+from rhylthyme.instance_checks import Finding
+from rhylthyme.instruments import (
     InstrumentSetupError,
     attach_instruments,
     fill_instrument_durations,
     instrument_findings,
     open_instruments,
 )
-from rhylthyme_cli_runner.program_runner import ProgramRunner, StepStatus
+from rhylthyme.program_runner import ProgramRunner, StepStatus
 
 pytestmark = pytest.mark.unit
 

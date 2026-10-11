@@ -2,7 +2,7 @@
 
 `rhylthyme <command> --help` prints the same information. Programs may be JSON
 or YAML. If the `rhylthyme` script is not on the PATH, every command also works
-as `python -m rhylthyme_cli_runner.cli <command>`.
+as `python -m rhylthyme <command>`.
 
 ## No account needed
 

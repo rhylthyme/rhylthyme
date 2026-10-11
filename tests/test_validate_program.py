@@ -12,8 +12,8 @@ from pathlib import Path
 
 import pytest
 
-from rhylthyme_cli_runner.instance_checks import Finding, validate_instances
-from rhylthyme_cli_runner.validate_program import (
+from rhylthyme.instance_checks import Finding, validate_instances
+from rhylthyme.validate_program import (
     perform_additional_validations,
     perform_additional_validations_structured,
     validate_program_file_structured,
@@ -109,7 +109,7 @@ def test_clean_program_and_expanded_program_yield_nothing():
     with open(COOKIES) as fh:
         cookies = json.load(fh)
     assert validate_instances(cookies) == []
-    from rhylthyme_cli_runner.expand_replicates import expand_replicates
+    from rhylthyme.expand_replicates import expand_replicates
 
     assert validate_instances(expand_replicates(cookies)) == []
 
@@ -358,7 +358,7 @@ def test_structured_file_result_shape(tmp_path):
 
 
 def test_fractional_seconds_are_not_zero():
-    from rhylthyme_cli_runner.validate_program import parse_duration_to_seconds
+    from rhylthyme.validate_program import parse_duration_to_seconds
 
     assert parse_duration_to_seconds({"type": "fixed", "seconds": 2.5}) == 2.5
     assert parse_duration_to_seconds({"type": "fixed", "seconds": 5.0}) == 5

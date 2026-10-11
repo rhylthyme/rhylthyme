@@ -16,7 +16,7 @@ from click.testing import CliRunner
 src_path = os.path.join(os.path.dirname(__file__), "..", "src")
 sys.path.insert(0, src_path)
 
-from rhylthyme_cli_runner.cli import cli
+from rhylthyme.cli.main import cli
 
 
 @pytest.fixture

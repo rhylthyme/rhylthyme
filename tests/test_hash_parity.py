@@ -10,7 +10,7 @@ import os
 
 import pytest
 
-from rhylthyme_cli_runner.history.hash import canonical_json, program_version
+from rhylthyme.history.hash import canonical_json, program_version
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TIMELINE_FIXTURES = os.path.normpath(

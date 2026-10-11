@@ -11,8 +11,9 @@ import os
 
 import pytest
 
-import rhylthyme_cli_runner.program_runner as program_runner_module
-from rhylthyme_cli_runner.history import (
+import rhylthyme.cli.tui as tui_module
+import rhylthyme.program_runner as program_runner_module
+from rhylthyme.history import (
     RunRecorder,
     freeze_planned,
     list_runs,
@@ -21,7 +22,7 @@ from rhylthyme_cli_runner.history import (
     step_identity,
     validate_run,
 )
-from rhylthyme_cli_runner.program_runner import ProgramRunner, StepStatus
+from rhylthyme.program_runner import ProgramRunner, StepStatus
 
 T0 = 1_700_000_000.0
 
@@ -409,8 +410,8 @@ class TestRunProgramWritesRecord:
                 runner.update()
             raise KeyboardInterrupt
 
-        monkeypatch.setattr(program_runner_module.curses, "wrapper", fake_wrapper)
-        written = program_runner_module.run_program(
+        monkeypatch.setattr(tui_module.curses, "wrapper", fake_wrapper)
+        written = tui_module.run_program(
             program_file, validate=False, runs_dir=temp_dir
         )
         assert written and os.path.isfile(written)
@@ -428,8 +429,8 @@ class TestRunProgramWritesRecord:
         self, history_program, clock, temp_dir, programs_dir, monkeypatch
     ):
         program_file = self._program_file(programs_dir, history_program)
-        monkeypatch.setattr(program_runner_module.curses, "wrapper", lambda fn: None)
-        written = program_runner_module.run_program(
+        monkeypatch.setattr(tui_module.curses, "wrapper", lambda fn: None)
+        written = tui_module.run_program(
             program_file, validate=False, runs_dir=temp_dir, record=False
         )
         assert written is None
@@ -448,8 +449,8 @@ class TestRunProgramWritesRecord:
                 runner.update()
             # user presses 'q': main loop returns normally
 
-        monkeypatch.setattr(program_runner_module.curses, "wrapper", fake_wrapper)
-        written = program_runner_module.run_program(
+        monkeypatch.setattr(tui_module.curses, "wrapper", fake_wrapper)
+        written = tui_module.run_program(
             program_file, validate=False, runs_dir=temp_dir
         )
         with open(written) as fh:
@@ -463,8 +464,8 @@ class TestRunProgramWritesRecord:
 
 @pytest.mark.unit
 def test_freeze_planned_matches_reference_resolver(history_program):
-    from rhylthyme_cli_runner.expand_replicates import expand_replicates
-    from rhylthyme_cli_runner.validate_program import calculate_step_start_time
+    from rhylthyme.expand_replicates import expand_replicates
+    from rhylthyme.validate_program import calculate_step_start_time
 
     expanded = expand_replicates(history_program)
     planned = freeze_planned(expanded)

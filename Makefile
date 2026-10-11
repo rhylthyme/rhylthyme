@@ -1,4 +1,4 @@
-# Makefile for rhylthyme-cli-runner development
+# Makefile for rhylthyme development
 
 .PHONY: help install install-dev test test-unit test-integration test-cli test-examples clean format lint type-check coverage
 

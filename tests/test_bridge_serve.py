@@ -13,9 +13,9 @@ pytest.importorskip("rhylthyme_galago")
 
 from rhylthyme_galago import FakeToolClient, ToolReply  # noqa: E402
 
-from rhylthyme_cli_runner.bridge_serve import check_start, serve  # noqa: E402
-from rhylthyme_cli_runner.cli import _default_schema_path  # noqa: E402
-from rhylthyme_cli_runner.validate_program import load_program_file  # noqa: E402
+from rhylthyme.cli.bridge_serve import check_start, serve  # noqa: E402
+from rhylthyme.cli.main import _default_schema_path  # noqa: E402
+from rhylthyme.validate_program import load_program_file  # noqa: E402
 
 PROGRAM = {
     "programId": "shake-plate",

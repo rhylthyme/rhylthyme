@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from rhylthyme_cli_runner.eval import llm
+from rhylthyme.cli.eval import llm
 
 pytestmark = pytest.mark.unit
 ROOT = Path(__file__).resolve().parent.parent
