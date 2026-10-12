@@ -28,7 +28,9 @@ from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, Union
 Message = Dict[str, Any]
 
 # Prices in USD per million tokens (input, output) for the first-party
-# Anthropic API, as listed by the claude-api skill on 2026-06-24. Lookup
+# Anthropic API, as listed by the claude-api skill on 2026-06-24 (Opus 5.5
+# and Sonnet 5.5 from platform.claude.com/docs/en/about-claude/pricing on
+# 2026-10-12). Lookup
 # strips any date suffix ("claude-haiku-4-5-20251001" -> "claude-haiku-4-5")
 # and then falls back to the longest matching prefix, so a new snapshot of
 # a known family still gets a price.
@@ -36,10 +38,12 @@ PRICE_TABLE_DATE = "2026-06-24"
 PRICES_PER_MTOK: Dict[str, tuple] = {
     "claude-fable-5-1": (10.00, 50.00),
     "claude-fable-5": (10.00, 50.00),
+    "claude-opus-5-5": (4.00, 20.00),
     "claude-opus-5": (5.00, 25.00),
     "claude-opus-4-8": (5.00, 25.00),
     "claude-opus-4-7": (5.00, 25.00),
     "claude-opus-4-6": (5.00, 25.00),
+    "claude-sonnet-5-5": (2.00, 10.00),
     "claude-sonnet-5": (2.00, 10.00),
     "claude-sonnet-4-6": (3.00, 15.00),
     "claude-haiku-4-5": (1.00, 5.00),
