@@ -965,6 +965,9 @@ class TestRegistryAndClients:
         assert price_for("claude-haiku-4-5") == (1.0, 5.0)
         assert price_for("claude-haiku-4-5-20251001") == (1.0, 5.0)
         assert price_for("claude-opus-5") == (5.0, 25.0)
+        # 5.5 has its own row, not the claude-opus-5 / claude-sonnet-5 prefix.
+        assert price_for("claude-opus-5-5") == (4.0, 20.0)
+        assert price_for("claude-sonnet-5-5") == (2.0, 10.0)
         assert price_for("gpt-99") is None
         assert estimate_cost("gpt-99", 1, 1) is None
         assert estimate_cost("claude-sonnet-5", 1_000_000, 100_000) == pytest.approx(
