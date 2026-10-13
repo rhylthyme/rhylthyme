@@ -47,6 +47,16 @@ jobs:
       with:
         repository: rhylthyme/rhylthyme-examples
         path: rhylthyme-examples
+    # tests/test_js_parity.py runs the JS validator from this checkout.
+    - name: Checkout rhylthyme-timeline
+      uses: actions/checkout@v4
+      with:
+        repository: rhylthyme/rhylthyme-timeline
+        path: rhylthyme-timeline
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -81,6 +91,8 @@ jobs:
         pytest tests -v -m "unit" --cov=src --cov-report=xml
 
     - name: Run integration tests
+      env:
+        RHYLTHYME_PARITY_REQUIRED: "1"
       run: |
         pytest tests -v -m "integration" --cov=src --cov-append --cov-report=xml
 
