@@ -132,7 +132,31 @@ def test_fixture_covers_every_reason():
         "ended-by-timer",
         "ended-by-abort",
         "ended-by-none",
+        # A dataset label or a person watching a video ended these steps:
+        # neither is the executor, so neither is a measurement.
+        "ended-by-annotation",
+        "ended-by-observer",
     } <= seen
+
+
+@pytest.mark.unit
+def test_fixture_has_a_video_timeline_record():
+    """
+    A video timeline's record (runtime.kind video, clockMode media) is valid
+    but never history: the clock rule drops the whole run.
+    """
+    video = [
+        case
+        for case in CASES
+        if case["record"]["runtime"].get("kind") == "video"
+        and case["record"]["runtime"].get("clockMode") == "media"
+    ]
+    assert video, "the corpus needs a video timeline record"
+    for case in video:
+        assert case["schemaValid"] is True
+        assert case["expectReason"] == "clock-not-wall"
+        assert case["usableStepIds"] == []
+        assert case["usableStepIdsIncludingFixed"] == []
 
 
 # ------------------------------------------------------------- unit checks

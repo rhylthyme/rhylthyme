@@ -2416,6 +2416,249 @@
    "expect": {}
   },
   {
+   "name": "video timelines are not history",
+   "comment": "One wall-clock run (1500 s) beside three video timeline records of the same program, version, environment and factors (runtime kind video, clockMode media): a dataset label, a person marking while watching, and one whose step even says executor. The clock rule drops all three, so the prediction is the wall run alone (n 1); counting all four would give n 4 and a median of 390 s.",
+   "program": {
+    "schemaVersion": "0.2.0-alpha",
+    "programId": "predict-parity",
+    "name": "Prediction parity",
+    "actors": 2,
+    "tracks": [
+     {
+      "trackId": "t",
+      "name": "T",
+      "steps": [
+       {
+        "stepId": "boil",
+        "name": "Boil",
+        "task": "stove",
+        "duration": {
+         "type": "variable",
+         "minSeconds": 600,
+         "maxSeconds": 1800,
+         "defaultSeconds": 1200
+        },
+        "startTrigger": {
+         "type": "programStart"
+        }
+       }
+      ]
+     }
+    ],
+    "resourceConstraints": [
+     {
+      "task": "stove",
+      "maxConcurrent": 1
+     }
+    ],
+    "metadata": {
+     "serves": "8",
+     "varianceFactors": [
+      {
+       "key": "batchKg",
+       "label": "Batch (kg)",
+       "type": "number"
+      },
+      {
+       "key": "oven",
+       "label": "Oven",
+       "type": "enum",
+       "values": [
+        "gas",
+        "electric",
+        "convection"
+       ]
+      }
+     ]
+    }
+   },
+   "records": [
+    {
+     "schemaVersion": "0.1.0-alpha",
+     "runId": "2026-03-10T10:00:00Z-2000",
+     "programId": "predict-parity",
+     "programVersion": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+     "runtime": {
+      "kind": "cli",
+      "version": "0.1.0a0",
+      "clockMode": "wall",
+      "speed": 1
+     },
+     "environmentId": "kitchen-a",
+     "startedAt": "2026-03-10T10:00:00Z",
+     "outcome": "completed",
+     "context": {
+      "serves": "8",
+      "actors": 2,
+      "userTags": {
+       "batchKg": 4
+      }
+     },
+     "steps": [
+      {
+       "stepId": "boil",
+       "instance": 1,
+       "planned": {
+        "start": 0,
+        "end": 1200,
+        "durationType": "variable",
+        "defaultSeconds": 1200
+       },
+       "actual": {
+        "start": 0,
+        "end": 1500
+       },
+       "endedBy": "executor",
+       "pausedSeconds": 0,
+       "triggerFiredAt": 0
+      }
+     ]
+    },
+    {
+     "schemaVersion": "0.1.0-alpha",
+     "runId": "2026-11-05T09:00:00Z-2001",
+     "programId": "predict-parity",
+     "programVersion": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+     "runtime": {
+      "kind": "video",
+      "version": "0.1.0",
+      "clockMode": "media",
+      "speed": 1
+     },
+     "environmentId": "kitchen-a",
+     "startedAt": "2026-11-05T09:00:00Z",
+     "outcome": "completed",
+     "context": {
+      "serves": "8",
+      "actors": 2,
+      "userTags": {
+       "batchKg": 4
+      }
+     },
+     "steps": [
+      {
+       "stepId": "boil",
+       "instance": 1,
+       "planned": {
+        "start": 0,
+        "end": 1200,
+        "durationType": "variable",
+        "defaultSeconds": 1200
+       },
+       "actual": {
+        "start": 0,
+        "end": 300
+       },
+       "endedBy": "annotation",
+       "pausedSeconds": 0,
+       "triggerFiredAt": 0
+      }
+     ]
+    },
+    {
+     "schemaVersion": "0.1.0-alpha",
+     "runId": "2026-11-05T09:10:00Z-2002",
+     "programId": "predict-parity",
+     "programVersion": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+     "runtime": {
+      "kind": "video",
+      "version": "0.1.0",
+      "clockMode": "media",
+      "speed": 1
+     },
+     "environmentId": "kitchen-a",
+     "startedAt": "2026-11-05T09:10:00Z",
+     "outcome": "completed",
+     "context": {
+      "serves": "8",
+      "actors": 2,
+      "userTags": {
+       "batchKg": 4
+      }
+     },
+     "steps": [
+      {
+       "stepId": "boil",
+       "instance": 1,
+       "planned": {
+        "start": 0,
+        "end": 1200,
+        "durationType": "variable",
+        "defaultSeconds": 1200
+       },
+       "actual": {
+        "start": 0,
+        "end": 420
+       },
+       "endedBy": "observer",
+       "pausedSeconds": 0,
+       "triggerFiredAt": 0
+      }
+     ]
+    },
+    {
+     "schemaVersion": "0.1.0-alpha",
+     "runId": "2026-11-05T09:20:00Z-2003",
+     "programId": "predict-parity",
+     "programVersion": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+     "runtime": {
+      "kind": "video",
+      "version": "0.1.0",
+      "clockMode": "media",
+      "speed": 1
+     },
+     "environmentId": "kitchen-a",
+     "startedAt": "2026-11-05T09:20:00Z",
+     "outcome": "completed",
+     "context": {
+      "serves": "8",
+      "actors": 2,
+      "userTags": {
+       "batchKg": 4
+      }
+     },
+     "steps": [
+      {
+       "stepId": "boil",
+       "instance": 1,
+       "planned": {
+        "start": 0,
+        "end": 1200,
+        "durationType": "variable",
+        "defaultSeconds": 1200
+       },
+       "actual": {
+        "start": 0,
+        "end": 360
+       },
+       "endedBy": "executor",
+       "pausedSeconds": 0,
+       "triggerFiredAt": 0
+      }
+     ]
+    }
+   ],
+   "context": {
+    "programVersion": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+    "environmentId": "kitchen-a",
+    "userTags": {
+     "batchKg": 4
+    }
+   },
+   "expect": {
+    "boil": {
+     "seconds": 1500.0,
+     "low": 1500.0,
+     "high": 1500.0,
+     "basis": "model",
+     "n": 1,
+     "source": "all",
+     "method": "median",
+     "factors": []
+    }
+   }
+  },
+  {
    "name": "model fitted on the Thanksgiving corpus",
    "comment": "Twenty synthetic runs whose turkey-roast obeys 600 + 90 * turkeyKg seconds. Asked for a 7 kg turkey in an electric oven \u2014 a combination the history has never seen \u2014 nothing is identical, so the lookup falls through to the model, keeps turkeyKg, drops the two one-hot oven columns (they correlate with nothing) and lands within 5% of the law's 1230 s. potatoes-boil obeys no law at all, so no factor survives and it comes back as the median of its measurements.",
    "program": "thanksgiving",

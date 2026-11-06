@@ -147,6 +147,32 @@ def test_prediction_matches_the_fixture(case):
         assert got == {}, case["name"]
 
 
+INLINE_CASES = [c for c in CASES if c.get("records")]
+
+
+@pytest.mark.parametrize("case", INLINE_CASES, ids=ids(INLINE_CASES))
+def test_the_fixture_records_are_valid_run_records(case):
+    """Every inline record validates, video timeline records included."""
+    from rhylthyme.history import validate_run
+
+    for record in case["records"]:
+        assert validate_run(record) == [], (case["name"], record["runId"])
+
+
+def test_video_timeline_records_are_not_history():
+    """
+    A video timeline's record (runtime.kind video, clockMode media) is valid
+    but times a recording, not a run, so the lookup must ignore it.
+    """
+    [case] = [c for c in CASES if c["name"] == "video timelines are not history"]
+    kinds = [r["runtime"]["kind"] for r in case["records"]]
+    assert kinds.count("video") >= 1 and kinds.count("cli") == 1
+    ended_by = {s["endedBy"] for r in case["records"] for s in r["steps"]}
+    assert {"annotation", "observer"} <= ended_by
+    for prediction in run_case(case).values():
+        assert prediction["n"] == 1, "only the wall-clock run is history"
+
+
 APPROX_CASES = [c for c in CASES if c.get("expectApprox")]
 
 
