@@ -28,11 +28,11 @@ SCHEDULE = TIMELINE / "src" / "schedule" / "index.js"
 
 # Known, deliberate differences, keyed by path under rhylthyme-examples.
 # Keep in step with KNOWN_DIFFERENCES in rhylthyme-timeline's test/parity.test.js.
-KNOWN_DIFFERENCES = {
-    # JS: a task with no resourceConstraint is an error unless the program
-    # names an environment or actors. Python: only with --strict.
-    "programs/comprehensive_manual_demo.json": "task_not_constrained policy",
-}
+# None today: the last one, programs/comprehensive_manual_demo.json (JS
+# rejects a task with no resourceConstraint unless the program names an
+# environment or actors; Python only with --strict), was fixed in
+# rhylthyme-examples 53e605f, so both validators now accept it.
+KNOWN_DIFFERENCES: dict[str, str] = {}
 
 # Codes only the JS validator emits.
 JS_ONLY_CODES = {"I_IMPLICIT_BARRIER"}
