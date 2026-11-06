@@ -654,6 +654,207 @@
       "stepReasonsIncludingFixed": {},
       "usableStepIds": [],
       "usableStepIdsIncludingFixed": []
+    },
+    {
+      "name": "video timeline (media clock)",
+      "comment": "A record made from a video (runs schema amended 2026-11-05): runtime kind video, clockMode media, so every time is seconds into the video. Steps are ended by a dataset label (annotation) or by a person marking while watching (observer); a step that never happened in the video has no actual. It times a recording, not a run, so the clock rule drops it whole and it never reaches predictions or calibration.",
+      "record": {
+        "schemaVersion": "0.1.0-alpha",
+        "runId": "2026-11-05T09:00:00Z-0a1b",
+        "programId": "usable-parity",
+        "programVersion": "sha256:abababababababababababababababababababababababababababababababab",
+        "runtime": {
+          "kind": "video",
+          "version": "0.1.0",
+          "clockMode": "media",
+          "speed": 1
+        },
+        "environmentId": null,
+        "startedAt": "2026-11-05T09:00:00.000Z",
+        "outcome": "completed",
+        "steps": [
+          {
+            "stepId": "fixed-labelled",
+            "instance": 1,
+            "planned": {
+              "start": 0,
+              "end": 600,
+              "durationType": "fixed",
+              "seconds": 600
+            },
+            "actual": {
+              "start": 12.512,
+              "end": 640.04
+            },
+            "endedBy": "annotation"
+          },
+          {
+            "stepId": "var-labelled",
+            "instance": 1,
+            "planned": {
+              "start": 600,
+              "end": 1800,
+              "durationType": "variable",
+              "defaultSeconds": 1200
+            },
+            "actual": {
+              "start": 640.04,
+              "end": 1702.3
+            },
+            "endedBy": "annotation",
+            "notes": "Technique error: stirred too briefly"
+          },
+          {
+            "stepId": "var-marked",
+            "instance": 1,
+            "planned": {
+              "start": 600,
+              "end": 1800,
+              "durationType": "variable",
+              "defaultSeconds": 1200
+            },
+            "actual": {
+              "start": 655.0,
+              "end": 1490.25
+            },
+            "endedBy": "observer"
+          },
+          {
+            "stepId": "never-happened",
+            "instance": 1,
+            "planned": {
+              "start": 1800,
+              "end": 2400,
+              "durationType": "variable",
+              "defaultSeconds": 600
+            }
+          }
+        ]
+      },
+      "expectUsable": false,
+      "expectReason": "clock-not-wall",
+      "schemaValid": true,
+      "stepReasons": {
+        "fixed-labelled": "clock-not-wall",
+        "var-labelled": "clock-not-wall",
+        "var-marked": "clock-not-wall",
+        "never-happened": "clock-not-wall"
+      },
+      "stepReasonsIncludingFixed": {
+        "fixed-labelled": "clock-not-wall",
+        "var-labelled": "clock-not-wall",
+        "var-marked": "clock-not-wall",
+        "never-happened": "clock-not-wall"
+      },
+      "usableStepIds": [],
+      "usableStepIdsIncludingFixed": []
+    },
+    {
+      "name": "wall-clock run with steps ended by a label or an observer",
+      "comment": "The schema lets any record use the annotation and observer endings. In a usable wall-clock run they still are not the executor, so those steps are not measurements, with or without includeFixed; the executor-ended step beside them is.",
+      "record": {
+        "schemaVersion": "0.1.0-alpha",
+        "runId": "2026-02-09T10:00:00Z-0009",
+        "programId": "usable-parity",
+        "programVersion": "sha256:abababababababababababababababababababababababababababababababab",
+        "runtime": {
+          "kind": "web",
+          "version": "2.0.0-beta.8",
+          "clockMode": "wall",
+          "speed": 1
+        },
+        "environmentId": null,
+        "startedAt": "2026-02-09T10:00:00.000Z",
+        "endedAt": "2026-02-09T10:40:00.000Z",
+        "outcome": "completed",
+        "steps": [
+          {
+            "stepId": "fixed-labelled",
+            "instance": 1,
+            "planned": {
+              "start": 0,
+              "end": 600,
+              "durationType": "fixed",
+              "seconds": 600
+            },
+            "actual": {
+              "start": 0,
+              "end": 610
+            },
+            "endedBy": "annotation",
+            "pausedSeconds": 0
+          },
+          {
+            "stepId": "var-labelled",
+            "instance": 1,
+            "planned": {
+              "start": 0,
+              "end": 1200,
+              "durationType": "variable",
+              "defaultSeconds": 1200
+            },
+            "actual": {
+              "start": 0,
+              "end": 1180
+            },
+            "endedBy": "annotation",
+            "pausedSeconds": 0
+          },
+          {
+            "stepId": "var-observed",
+            "instance": 1,
+            "planned": {
+              "start": 0,
+              "end": 1200,
+              "durationType": "variable",
+              "defaultSeconds": 1200
+            },
+            "actual": {
+              "start": 0,
+              "end": 1250
+            },
+            "endedBy": "observer",
+            "pausedSeconds": 0
+          },
+          {
+            "stepId": "var-executor",
+            "instance": 1,
+            "planned": {
+              "start": 0,
+              "end": 1200,
+              "durationType": "variable",
+              "defaultSeconds": 1200
+            },
+            "actual": {
+              "start": 0,
+              "end": 1210
+            },
+            "endedBy": "executor",
+            "pausedSeconds": 0
+          }
+        ]
+      },
+      "expectUsable": true,
+      "expectReason": null,
+      "schemaValid": true,
+      "stepReasons": {
+        "fixed-labelled": "fixed-duration",
+        "var-labelled": "ended-by-annotation",
+        "var-observed": "ended-by-observer",
+        "var-executor": null
+      },
+      "stepReasonsIncludingFixed": {
+        "fixed-labelled": "ended-by-annotation",
+        "var-labelled": "ended-by-annotation",
+        "var-observed": "ended-by-observer",
+        "var-executor": null
+      },
+      "usableStepIds": [
+        "var-executor"
+      ],
+      "usableStepIdsIncludingFixed": [
+        "var-executor"
+      ]
     }
   ]
 }

@@ -9,7 +9,9 @@ A **run** is usable when
 
 * ``outcome == "completed"`` — a run that was abandoned or aborted stopped for
   a reason that is not about how long the work takes,
-* ``runtime.clockMode == "wall"`` — a simulated clock may have drifted,
+* ``runtime.clockMode == "wall"`` — a simulated clock may have drifted, and a
+  ``media`` clock (a video timeline: times are seconds into a video, steps
+  ended by ``annotation`` or ``observer``) times a recording, not a run,
 * ``runtime.speed == 1`` — a scaled run measures the timer, not the cook.
 
 Within a usable run a **step** is usable when
